@@ -1,33 +1,231 @@
-import { useAuth } from "@/_core/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { useState } from "react";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  BookOpen,
+  Building2,
+  CalendarDays,
+  Check,
+  ChevronRight,
+  MapPin,
+  Menu,
+  Monitor,
+  PhoneCall,
+  Sparkles,
+  Users,
+  X,
+} from "lucide-react";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
-export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
+const assets = {
+  logo: "/manus-storage/logo_95d53d58.jpg",
+  campus: "/manus-storage/garden_83123fb1.jpg",
+  classroom: "/manus-storage/st_bfe3ecda.jpg",
+  students: "/manus-storage/st2_906e5615.jpg",
+};
 
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+const navItems = [
+  { label: "About", href: "#about" },
+  { label: "Academics", href: "#academics" },
+  { label: "Facilities", href: "#facilities" },
+  { label: "Activities", href: "#activities" },
+  { label: "Gallery", href: "#gallery" },
+  { label: "Contact", href: "#contact" },
+];
 
+const reveal = {
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55 } },
+};
+
+function SectionEyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="mb-4 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.24em] text-[#2d7b74]">
+      <span className="h-px w-8 bg-[#2d7b74]" />
+      {children}
     </div>
   );
 }
+
+function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-[#f7f8f4] text-[#183b3d]">
+      <header className="absolute inset-x-0 top-0 z-40">
+        <div className="border-b border-white/15 bg-[#113c3d]/90 text-[11px] text-white/75 backdrop-blur">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-2.5 sm:px-8">
+            <p className="hidden sm:block">GICUMBI · MUTETE · GASEKE, RWANDA</p>
+            <a className="flex items-center gap-2 transition-colors hover:text-[#e9c66b]" href="tel:0780081074">
+              <PhoneCall size={13} /> 0780 081 074
+            </a>
+          </div>
+        </div>
+        <div className="mx-auto max-w-7xl px-5 pt-4 sm:px-8">
+          <nav className="flex items-center justify-between rounded-2xl border border-white/20 bg-white/10 px-4 py-3 shadow-2xl shadow-[#092c2c]/10 backdrop-blur-xl sm:px-5">
+            <a href="#top" className="flex items-center gap-3" aria-label="GS Gaseke home">
+              <span className="grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-white shadow-lg">
+                <img src={assets.logo} alt="GS Gaseke school logo" className="h-full w-full object-cover" />
+              </span>
+              <span className="hidden text-left leading-none sm:block">
+                <span className="block font-display text-lg font-semibold tracking-tight text-white">GS Gaseke</span>
+                <span className="mt-1 block text-[9px] font-bold uppercase tracking-[0.2em] text-white/60">Learn · Grow · Lead</span>
+              </span>
+            </a>
+
+            <div className="hidden items-center gap-7 lg:flex">
+              {navItems.map((item) => (
+                <a key={item.href} href={item.href} className="text-xs font-semibold text-white/80 transition-colors hover:text-[#f5d98a]">
+                  {item.label}
+                </a>
+              ))}
+            </div>
+
+            <div className="hidden items-center gap-3 sm:flex">
+              <Link href="/portal" className="rounded-full border border-white/30 px-4 py-2.5 text-xs font-bold text-white transition hover:border-white hover:bg-white/10">
+                Sign in
+              </Link>
+              <a href="#contact" className="rounded-full bg-[#e9c66b] px-4 py-2.5 text-xs font-bold text-[#173d3e] transition hover:bg-[#f5d98a]">
+                Get in touch
+              </a>
+            </div>
+
+            <button className="rounded-lg p-2 text-white lg:hidden" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle navigation">
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </nav>
+          {menuOpen && (
+            <div className="mt-2 rounded-2xl border border-white/15 bg-[#113c3d] p-3 shadow-xl lg:hidden">
+              {navItems.map((item) => (
+                <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="block rounded-xl px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/10">
+                  {item.label}
+                </a>
+              ))}
+              <Link href="/portal" className="mt-2 block rounded-xl bg-[#e9c66b] px-4 py-3 text-center text-sm font-bold text-[#173d3e]">Open school portal</Link>
+            </div>
+          )}
+        </div>
+      </header>
+
+      <main id="top">
+        <section className="relative isolate min-h-[730px] overflow-hidden bg-[#123f40] pt-40 text-white lg:min-h-[780px] lg:pt-48">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_25%,rgba(75,151,135,.28),transparent_30%),linear-gradient(120deg,#10393b_0%,#164b4a_54%,#296e67_100%)]" />
+          <div className="absolute -right-40 top-36 h-[28rem] w-[28rem] rounded-full border border-white/10" />
+          <div className="absolute -right-20 top-56 h-[20rem] w-[20rem] rounded-full border border-white/10" />
+          <div className="absolute bottom-0 left-0 h-36 w-full bg-[linear-gradient(to_top,rgba(247,248,244,.9),transparent)]" />
+          <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pb-24 sm:px-8 lg:grid-cols-[1.02fr_.98fr] lg:gap-20">
+            <motion.div initial="hidden" animate="show" variants={reveal} className="max-w-2xl">
+              <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#e9c66b]/35 bg-[#e9c66b]/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#f5d98a]">
+                <Sparkles size={13} /> A place to discover your next step
+              </div>
+              <h1 className="max-w-2xl font-display text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+                Building character.<br /><span className="text-[#f0cf78]">Shaping tomorrow.</span>
+              </h1>
+              <p className="mt-7 max-w-lg text-base leading-7 text-white/72 sm:text-lg">
+                Welcome to GS Gaseke — a learning community in Gaseke, Rwanda where curiosity is encouraged, digital skills are nurtured and every learner is seen.
+              </p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <a href="#about" className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#f0cf78] px-6 py-3.5 text-sm font-bold text-[#173d3e] transition hover:bg-[#f7dfa0]">
+                  Explore our school <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
+                </a>
+                <Link href="/portal" className="inline-flex items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-3.5 text-sm font-bold text-white transition hover:border-white hover:bg-white/10">
+                  School portal <ChevronRight size={17} />
+                </Link>
+              </div>
+              <div className="mt-11 flex flex-wrap gap-x-8 gap-y-3 text-xs font-semibold text-white/60">
+                <span className="flex items-center gap-2"><Check size={15} className="text-[#f0cf78]" /> Learning with purpose</span>
+                <span className="flex items-center gap-2"><Check size={15} className="text-[#f0cf78]" /> Digital confidence</span>
+              </div>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, scale: 0.96, x: 20 }} animate={{ opacity: 1, scale: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="relative mx-auto w-full max-w-[560px]">
+              <div className="absolute -left-5 top-10 z-10 hidden w-44 rounded-2xl border border-white/30 bg-[#f7f8f4] p-4 text-[#183b3d] shadow-xl sm:block">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#2d7b74]">Our promise</p>
+                <p className="mt-2 font-display text-xl font-semibold leading-tight">Every learner has room to rise.</p>
+              </div>
+              <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/35">
+                <img src={assets.campus} alt="GS Gaseke campus courtyard" className="aspect-[4/3] w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/65 via-transparent to-transparent" />
+                <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">Gaseke campus</p>
+                    <p className="mt-1 font-display text-2xl font-semibold">A bright place to belong.</p>
+                  </div>
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-white/15 backdrop-blur"><ArrowRight size={17} /></span>
+                </div>
+              </div>
+              <div className="absolute -bottom-9 -right-4 grid h-28 w-28 place-items-center rounded-full border-8 border-[#123f40] bg-[#e9c66b] text-center text-[#173d3e] shadow-xl sm:-right-8">
+                <div><span className="block font-display text-2xl font-semibold">GS</span><span className="block text-[8px] font-bold uppercase tracking-widest">Gaseke</span></div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section id="about" className="relative bg-[#f7f8f4] py-24 sm:py-32">
+          <div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[.86fr_1.14fr] lg:items-end lg:gap-24">
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={reveal}>
+              <SectionEyebrow>Who we are</SectionEyebrow>
+              <h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-5xl">A school with a clear sense of <span className="text-[#2d7b74]">possibility.</span></h2>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={reveal}>
+              <p className="max-w-2xl text-lg leading-8 text-[#547072]">GS Gaseke is a school community based in Gicumbi – Mutete – Gaseke. This website is being shaped as a welcoming digital front door for learners, families, teachers and the wider school community.</p>
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                {[{ icon: BookOpen, title: "Learning", text: "A foundation for confident, curious learners." }, { icon: Users, title: "Community", text: "A place where people learn with and from one another." }, { icon: Monitor, title: "Digital skills", text: "Preparing learners for a connected future." }].map(({ icon: Icon, title, text }) => (
+                  <div key={title} className="border-t border-[#d5dfd9] pt-4"><Icon size={20} className="text-[#2d7b74]" /><h3 className="mt-3 text-sm font-bold text-[#173d3e]">{title}</h3><p className="mt-1 text-xs leading-5 text-[#718586]">{text}</p></div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section id="academics" className="bg-[#e6eeea] py-24 sm:py-28">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="grid gap-12 lg:grid-cols-[.74fr_1.26fr] lg:items-center">
+              <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }} variants={reveal}>
+                <SectionEyebrow>Learning in action</SectionEyebrow>
+                <h2 className="max-w-md font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-[#173d3e] sm:text-5xl">Where lessons open doors.</h2>
+                <p className="mt-6 max-w-md leading-7 text-[#547072]">Our learning spaces are designed to connect strong foundations with practical confidence. Official curriculum and programme details can be added here as they are confirmed by the school.</p>
+                <a href="#contact" className="group mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#206a66]">Ask about learning at GS Gaseke <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></a>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.18 }} transition={{ duration: 0.6 }} className="relative overflow-hidden rounded-[2rem] bg-[#173d3e]">
+                <img src={assets.classroom} alt="Students learning in a GS Gaseke computer classroom" className="aspect-[16/9] w-full object-cover opacity-90" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#103d3d]/90 via-[#103d3d]/15 to-transparent" />
+                <div className="absolute bottom-6 left-6 max-w-[250px] text-white sm:bottom-9 sm:left-9"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#f0cf78]">Learning spaces</p><p className="mt-2 font-display text-2xl font-semibold leading-tight sm:text-3xl">Curiosity deserves room.</p></div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        <section id="facilities" className="bg-[#f7f8f4] py-24 sm:py-32">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><SectionEyebrow>Spaces that support growth</SectionEyebrow><h2 className="max-w-lg font-display text-4xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-5xl">A campus made for <span className="text-[#2d7b74]">connection.</span></h2></div><p className="max-w-sm text-sm leading-6 text-[#718586]">Explore the spaces that help school life feel active, focused and full of possibility.</p></div>
+            <div className="mt-12 grid gap-5 md:grid-cols-3">
+              {[{ number: "01", title: "Learning rooms", text: "Thoughtful spaces for lessons, questions and collaboration.", icon: Building2 }, { number: "02", title: "Digital classroom", text: "Hands-on computer learning that grows confidence step by step.", icon: Monitor }, { number: "03", title: "Campus grounds", text: "Open paths and shared spaces for everyday school life.", icon: MapPin }].map(({ number, title, text, icon: Icon }, index) => (
+                <motion.div key={title} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }} variants={{ ...reveal, show: { ...reveal.show, transition: { ...reveal.show.transition, delay: index * 0.08 } } }} className="group rounded-[1.5rem] border border-[#dfe7e1] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-[#173d3e]/8 sm:p-8"><div className="flex items-center justify-between"><span className="font-display text-3xl text-[#bfd2c9]">{number}</span><span className="grid h-10 w-10 place-items-center rounded-full bg-[#e6eeea] text-[#2d7b74] transition group-hover:bg-[#e9c66b] group-hover:text-[#173d3e]"><Icon size={18} /></span></div><h3 className="mt-10 font-display text-2xl font-semibold text-[#173d3e]">{title}</h3><p className="mt-3 text-sm leading-6 text-[#718586]">{text}</p></motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="activities" className="bg-[#173d3e] py-24 text-white sm:py-28">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="grid gap-12 lg:grid-cols-[1fr_.9fr] lg:items-center">
+              <div><SectionEyebrow>Beyond the timetable</SectionEyebrow><h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-5xl">Every day is an invitation to <span className="text-[#f0cf78]">participate.</span></h2><p className="mt-6 max-w-lg text-base leading-7 text-white/65">School is more than lessons. Use this space to share confirmed activities, clubs, events and the moments that make GS Gaseke memorable.</p><div className="mt-8 grid gap-3 sm:grid-cols-2">{["Clubs & creative expression", "Sport & active living", "Community moments", "Digital discovery"].map((item) => <div key={item} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"><span className="grid h-6 w-6 place-items-center rounded-full bg-[#2d7b74] text-[#f0cf78]"><Check size={14} /></span>{item}</div>)}</div></div>
+              <div className="relative"><img src={assets.students} alt="Students developing digital skills" className="aspect-[4/3] w-full rounded-[2rem] object-cover" /><div className="absolute -bottom-5 -left-5 rounded-2xl bg-[#f0cf78] p-5 text-[#173d3e] shadow-xl sm:-left-8"><CalendarDays size={20} /><p className="mt-3 max-w-[150px] font-display text-xl font-semibold leading-tight">A school calendar that keeps everyone connected.</p></div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="gallery" className="bg-[#f7f8f4] py-24 sm:py-32">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8"><div className="flex items-end justify-between gap-6"><div><SectionEyebrow>From our campus</SectionEyebrow><h2 className="font-display text-4xl font-semibold tracking-[-0.04em] text-[#173d3e] sm:text-5xl">A glimpse of Gaseke.</h2></div><span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-[#718586] sm:block">Gallery preview · 04 images</span></div><div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">{[assets.campus, assets.classroom, assets.students, assets.logo].map((src, index) => <motion.div key={src} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ delay: index * 0.07 }} className={`overflow-hidden rounded-2xl bg-[#e6eeea] ${index === 0 ? "md:col-span-2 md:row-span-2" : ""}`}><img src={src} alt={index === 0 ? "GS Gaseke campus" : index === 1 ? "GS Gaseke classroom" : index === 2 ? "GS Gaseke students" : "GS Gaseke logo"} className={`h-full w-full object-cover transition duration-500 hover:scale-105 ${index === 0 ? "aspect-square" : "aspect-square"}`} /></motion.div>)}</div></div>
+        </section>
+
+        <section id="contact" className="bg-[#e9c66b] py-20 text-[#173d3e] sm:py-24"><div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end"><div><SectionEyebrow>Let’s connect</SectionEyebrow><h2 className="max-w-2xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl">Have a question for GS Gaseke?</h2><p className="mt-5 max-w-xl text-base leading-7 text-[#3e6260]">For official school information, admissions questions or partnership enquiries, contact the school directly. More contact options can be added as details are confirmed.</p></div><div className="flex flex-col gap-3 sm:flex-row lg:flex-col"><a href="tel:0780081074" className="inline-flex items-center justify-center gap-3 rounded-full bg-[#173d3e] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#245a58]"><PhoneCall size={17} /> 0780 081 074</a><span className="inline-flex items-center justify-center gap-3 rounded-full border border-[#173d3e]/20 px-6 py-3.5 text-sm font-semibold"><MapPin size={17} /> Gicumbi · Mutete · Gaseke</span></div></div></section>
+      </main>
+
+      <footer className="bg-[#0e3031] py-10 text-white"><div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 sm:px-8 md:flex-row md:items-center md:justify-between"><div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-white"><img src={assets.logo} alt="GS Gaseke logo" className="h-full w-full object-cover" /></span><div><p className="font-display text-lg font-semibold">GS Gaseke</p><p className="text-[10px] uppercase tracking-[0.18em] text-white/50">Learn · Grow · Lead</p></div></div><div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/55">{navItems.map((item) => <a key={item.href} href={item.href} className="transition hover:text-white">{item.label}</a>)}</div><p className="text-xs text-white/40">© {new Date().getFullYear()} GS Gaseke</p></div></footer>
+    </div>
+  );
+}
+
+export default Home;
