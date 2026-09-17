@@ -93,6 +93,9 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: storyRef, offset: ["start start", "end end"] });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.04, 1.12]);
+  const washX = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
   const activeItem = items[activeIndex];
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
@@ -101,9 +104,11 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
   });
 
   return (
-    <section id={id} ref={storyRef} className={`relative ${tone === "dark" ? "bg-[#173d3e] text-white" : "bg-[#e6eeea] text-[#173d3e]"}`} style={{ minHeight: `${items.length * 64}vh` }}>
+    <section id={id} ref={storyRef} className={`relative ${tone === "dark" ? "bg-[#173d3e] text-white" : "bg-[#e6eeea] text-[#173d3e]"}`} style={{ minHeight: `${Math.max(items.length * 36, 108)}vh` }}>
       <div className="sticky top-0 flex min-h-screen items-center overflow-hidden py-24 sm:py-28">
-        <div className="pointer-events-none absolute inset-0 opacity-70" style={{ background: tone === "dark" ? "radial-gradient(circle at 75% 25%, rgba(45,123,116,.35), transparent 35%)" : "radial-gradient(circle at 85% 20%, rgba(255,255,255,.75), transparent 32%)" }} />
+        <motion.div className="pointer-events-none absolute -inset-[8%] bg-cover bg-center opacity-20 mix-blend-multiply" style={{ backgroundImage: "url('/manus-storage/scroll-story-background_810824ed.jpg')", backgroundPositionY: backgroundY, scale: backgroundScale }} aria-hidden="true" />
+        <motion.div className="pointer-events-none absolute -inset-y-1/4 -left-1/4 w-[125%] opacity-80" style={{ x: washX, background: tone === "dark" ? "radial-gradient(circle at 75% 25%, rgba(45,123,116,.48), transparent 38%)" : "radial-gradient(circle at 85% 20%, rgba(255,255,255,.88), transparent 36%)" }} aria-hidden="true" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-[#f7f8f4]/20" aria-hidden="true" />
         <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8">
           <div className="gsap-section-heading mb-10 flex items-end justify-between gap-6 sm:mb-14"><div><SectionEyebrow>{eyebrow}</SectionEyebrow><h2 className={`max-w-2xl font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{title}</h2><p className={`mt-5 max-w-xl text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{intro}</p></div><span className={`hidden rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] sm:block ${tone === "dark" ? "border-white/15 text-white/55" : "border-[#b8d2c8] text-[#547072]"}`}>Scroll to explore</span></div>
           <div className="grid items-center gap-8 lg:grid-cols-[.78fr_1.22fr] lg:gap-16">

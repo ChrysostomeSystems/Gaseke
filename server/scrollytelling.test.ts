@@ -18,4 +18,11 @@ describe("GS Gaseke scrollytelling", () => {
     expect(homePage).toContain("progressWidth");
     expect(homePage).toContain("Scroll to explore");
   });
+
+  it("uses a designed parallax background and compact story spacing", () => {
+    expect(homePage).toContain("scroll-story-background_810824ed.jpg");
+    expect(homePage).toContain("backgroundY");
+    expect(homePage).toContain("backgroundScale");
+    expect(homePage).toContain("items.length * 36");
+  });
 });
