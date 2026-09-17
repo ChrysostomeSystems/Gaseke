@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
+  ArrowLeft,
   BookOpen,
   Building2,
   CalendarDays,
@@ -51,6 +52,7 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
 
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [aboutView, setAboutView] = useState<"overview" | "levels" | "journey" | "fees">("overview");
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f7f8f4] text-[#183b3d]">
@@ -162,31 +164,27 @@ function Home() {
 
         <section id="about" className="relative scroll-mt-32 bg-[#f7f8f4] py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="grid gap-14 lg:grid-cols-[.86fr_1.14fr] lg:items-end lg:gap-24">
-            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={reveal}>
-              <SectionEyebrow>About GS Gaseke</SectionEyebrow>
-              <h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-5xl">A learning journey for every <span className="text-[#2d7b74]">stage.</span></h2>
-            </motion.div>
-            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={reveal}>
-              <p className="max-w-2xl text-lg leading-8 text-[#547072]">GS Gaseke is located in Gicumbi – Mutete – Gaseke, Rwanda. The school offers education from Nursery through Primary and O-Level, continuing to A-Level with subject pathways in Mathematics, Economy, Physics and Computer Science.</p>
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {[{ icon: BookOpen, title: "Four levels", text: "Nursery, Primary, O-Level and A-Level." }, { icon: Users, title: "One journey", text: "A continuous path through school stages." }, { icon: Monitor, title: "A-Level focus", text: "Mathematics, Economy, Physics and Computer Science." }].map(({ icon: Icon, title, text }) => (
-                  <div key={title} className="border-t border-[#d5dfd9] pt-4"><Icon size={20} className="text-[#2d7b74]" /><h3 className="mt-3 text-sm font-bold text-[#173d3e]">{title}</h3><p className="mt-1 text-xs leading-5 text-[#718586]">{text}</p></div>
-                ))}
-              </div>
-            </motion.div>
-            </div>
-            <div className="mt-20 border-t border-[#d5dfd9] pt-10 sm:mt-24">
-              <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-                <div><SectionEyebrow>Termly school fees</SectionEyebrow><h3 className="font-display text-3xl font-semibold tracking-[-0.04em] text-[#173d3e] sm:text-4xl">Plan for your learner’s next step.</h3></div>
-                <p className="max-w-sm text-sm leading-6 text-[#718586]">The fee guide below shows the termly amounts provided by GS Gaseke.</p>
-              </div>
-              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {[{ level: "Nursery", fee: "20,000", note: "per term" }, { level: "Primary", fee: "50,000", note: "per term" }, { level: "O-Level", fee: "85,000", note: "per term" }, { level: "A-Level", fee: "85,000", note: "per term" }].map(({ level, fee, note }, index) => (
-                  <div key={level} className={`rounded-2xl border p-5 ${index === 2 || index === 3 ? "border-[#b8d2c8] bg-[#e6eeea]" : "border-[#dfe7e1] bg-white"}`}><div className="flex items-center justify-between"><p className="text-sm font-bold text-[#173d3e]">{level}</p><span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#2d7b74]">FRW</span></div><p className="mt-5 font-display text-3xl font-semibold tracking-[-0.04em] text-[#206a66]">{fee}</p><p className="mt-1 text-xs text-[#718586]">{note}</p></div>
-                ))}
-              </div>
-            </div>
+            <AnimatePresence mode="wait" initial={false}>
+              {aboutView === "overview" ? (
+                <motion.div key="about-overview" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.25 }}>
+                  <div className="grid gap-10 lg:grid-cols-[.75fr_1.25fr] lg:items-end lg:gap-20">
+                    <div><SectionEyebrow>About GS Gaseke</SectionEyebrow><h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-5xl">Discover the school, one <span className="text-[#2d7b74]">story</span> at a time.</h2><p className="mt-6 max-w-md text-base leading-7 text-[#547072]">Choose a topic below to explore the learning levels, school journey and termly fees at GS Gaseke.</p></div>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                      {[{ view: "levels" as const, icon: BookOpen, label: "Education levels", text: "Explore Nursery, Primary, O-Level and A-Level." }, { view: "journey" as const, icon: Users, label: "School journey", text: "Learn about our mission, vision and community." }, { view: "fees" as const, icon: Monitor, label: "School fees", text: "See the termly fee for every education level." }].map(({ view, icon: Icon, label, text }) => (
+                        <button key={view} type="button" onClick={() => setAboutView(view)} className="group rounded-2xl border border-[#dfe7e1] bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-[#b8d2c8] hover:shadow-xl hover:shadow-[#173d3e]/8"><div className="flex items-center justify-between"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#e6eeea] text-[#2d7b74] transition group-hover:bg-[#e9c66b] group-hover:text-[#173d3e]"><Icon size={19} /></span><ArrowRight size={17} className="text-[#9ab3a8] transition group-hover:translate-x-1 group-hover:text-[#206a66]" /></div><h3 className="mt-8 font-display text-xl font-semibold text-[#173d3e]">{label}</h3><p className="mt-2 text-sm leading-6 text-[#718586]">{text}</p><span className="mt-5 block text-[10px] font-bold uppercase tracking-[0.18em] text-[#206a66]">View details</span></button>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div key={aboutView} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }} transition={{ duration: 0.25 }}>
+                  <button type="button" onClick={() => setAboutView("overview")} className="group mb-9 inline-flex items-center gap-2 text-sm font-bold text-[#206a66] transition hover:text-[#173d3e]"><ArrowLeft size={17} className="transition-transform group-hover:-translate-x-1" /> Back to About</button>
+                  {aboutView === "levels" && <div><SectionEyebrow>Education levels</SectionEyebrow><h2 className="max-w-2xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-6xl">A complete path from <span className="text-[#2d7b74]">Nursery to A-Level.</span></h2><p className="mt-6 max-w-2xl text-lg leading-8 text-[#547072]">GS Gaseke offers education across four stages, helping learners move forward with a clear and connected school journey.</p><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[{ level: "Nursery", text: "Early learning foundations and a first step into school life." }, { level: "Primary", text: "Building essential knowledge, confidence and learning habits." }, { level: "O-Level", text: "Developing strong subject foundations for future choices." }, { level: "A-Level", text: "Focused study in Mathematics, Economy, Physics and Computer Science." }].map(({ level, text }, index) => <div key={level} className="rounded-2xl border border-[#dfe7e1] bg-white p-5 shadow-sm"><span className="font-display text-3xl text-[#bfd2c9]">0{index + 1}</span><h3 className="mt-8 font-display text-xl font-semibold text-[#173d3e]">{level}</h3><p className="mt-2 text-sm leading-6 text-[#718586]">{text}</p></div>)}</div></div>}
+                  {aboutView === "journey" && <div className="grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-center"><div><SectionEyebrow>Our school journey</SectionEyebrow><h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-6xl">Learning with purpose, growing with <span className="text-[#2d7b74]">vision.</span></h2><p className="mt-6 max-w-xl text-lg leading-8 text-[#547072]">GS Gaseke is located in Gicumbi – Mutete – Gaseke, Rwanda. Our school journey brings learners through Nursery, Primary, O-Level and A-Level as they build knowledge, confidence and a sense of direction.</p></div><div className="rounded-[2rem] bg-[#173d3e] p-7 text-white shadow-xl sm:p-10"><div className="border-b border-white/15 pb-7"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#f0cf78]">Mission draft</p><p className="mt-3 font-display text-2xl font-semibold leading-tight sm:text-3xl">Draft: To support every learner through a purposeful and connected education journey.</p></div><div className="pt-7"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#f0cf78]">Vision draft</p><p className="mt-3 font-display text-2xl font-semibold leading-tight sm:text-3xl">Draft: To help learners grow into confident people prepared for their next step.</p></div></div></div>}
+                  {aboutView === "fees" && <div><SectionEyebrow>Termly school fees</SectionEyebrow><h2 className="max-w-2xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-6xl">A clear guide for every <span className="text-[#2d7b74]">stage.</span></h2><p className="mt-6 max-w-xl text-lg leading-8 text-[#547072]">The termly fee amounts below were provided for GS Gaseke’s four education levels.</p><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[{ level: "Nursery", fee: "20,000" }, { level: "Primary", fee: "50,000" }, { level: "O-Level", fee: "85,000" }, { level: "A-Level", fee: "85,000" }].map(({ level, fee }, index) => <div key={level} className={`rounded-2xl border p-6 ${index > 1 ? "border-[#b8d2c8] bg-[#e6eeea]" : "border-[#dfe7e1] bg-white"}`}><div className="flex items-center justify-between"><h3 className="font-display text-xl font-semibold text-[#173d3e]">{level}</h3><span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#2d7b74]">FRW</span></div><p className="mt-8 font-display text-4xl font-semibold tracking-[-0.04em] text-[#206a66]">{fee}</p><p className="mt-1 text-sm text-[#718586]">per term</p></div>)}</div></div>}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </section>
 
