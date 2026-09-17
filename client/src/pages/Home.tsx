@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
   ArrowLeft,
@@ -50,6 +50,12 @@ const scrollStories = {
     { eyebrow: "Community moments", title: "Learning happens together.", text: "Use this space to share confirmed events and community experiences as they are provided.", image: assets.classroom, kicker: "Beyond the timetable" },
     { eyebrow: "Digital discovery", title: "The future is something learners can explore.", text: "Digital discovery grows curiosity and confidence beyond the timetable.", image: assets.students, kicker: "Beyond the timetable" },
   ],
+  gallery: [
+    { eyebrow: "Campus grounds", title: "A bright place to belong.", text: "A glimpse of the Gaseke campus and the shared spaces around school life.", image: assets.campus, kicker: "Gallery 01" },
+    { eyebrow: "Learning spaces", title: "Curiosity deserves room.", text: "Classrooms designed for lessons, questions and collaborative discovery.", image: assets.classroom, kicker: "Gallery 02" },
+    { eyebrow: "Digital confidence", title: "Learning today, leading tomorrow.", text: "Students building practical digital skills with focus and confidence.", image: assets.students, kicker: "Gallery 03" },
+    { eyebrow: "Our identity", title: "The GS Gaseke story in one mark.", text: "The school logo carries the identity and spirit of the Gaseke community.", image: assets.logo, kicker: "Gallery 04" },
+  ],
 } as const;
 
 const navItems = [
@@ -80,6 +86,7 @@ type ScrollStoryItem = { eyebrow: string; title: string; text: string; image: st
 function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id: string; eyebrow: string; title: React.ReactNode; intro: string; items: readonly ScrollStoryItem[]; tone?: "light" | "dark" }) {
   const storyRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: storyRef, offset: ["start start", "end end"] });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const activeItem = items[activeIndex];
@@ -90,7 +97,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
   });
 
   return (
-    <section id={id} ref={storyRef} className={`relative ${tone === "dark" ? "bg-[#173d3e] text-white" : "bg-[#e6eeea] text-[#173d3e]"}`} style={{ minHeight: `${items.length * 82}vh` }}>
+    <section id={id} ref={storyRef} className={`relative ${tone === "dark" ? "bg-[#173d3e] text-white" : "bg-[#e6eeea] text-[#173d3e]"}`} style={{ minHeight: `${items.length * 64}vh` }}>
       <div className="sticky top-0 flex min-h-screen items-center overflow-hidden py-24 sm:py-28">
         <div className="pointer-events-none absolute inset-0 opacity-70" style={{ background: tone === "dark" ? "radial-gradient(circle at 75% 25%, rgba(45,123,116,.35), transparent 35%)" : "radial-gradient(circle at 85% 20%, rgba(255,255,255,.75), transparent 32%)" }} />
         <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8">
@@ -98,7 +105,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
           <div className="grid items-center gap-8 lg:grid-cols-[.78fr_1.22fr] lg:gap-16">
             <div className="order-2 lg:order-1">
               <AnimatePresence mode="wait" initial={false}>
-                <motion.div key={`${id}-${activeIndex}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.28 }}>
+                <motion.div key={`${id}-${activeIndex}`} initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={prefersReducedMotion ? undefined : { opacity: 0, y: -16 }} transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.kicker}</p>
                   <h3 className={`mt-4 max-w-xl font-display text-3xl font-semibold leading-tight sm:text-5xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{activeItem.title}</h3>
                   <p className={`mt-5 max-w-md text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{activeItem.text}</p>
@@ -109,7 +116,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
             </div>
             <div className="order-1 lg:order-2">
               <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20">
-                <AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={activeItem.eyebrow} initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .98 }} transition={{ duration: .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence>
+                <AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={activeItem.eyebrow} initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div>
               </div>
             </div>
@@ -317,9 +324,14 @@ function Home() {
           tone="dark"
         />
 
-        <section id="gallery" className="scroll-mt-32 bg-[#f7f8f4] py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8"><div className="flex items-end justify-between gap-6"><div><SectionEyebrow>From our campus</SectionEyebrow><h2 className="font-display text-4xl font-semibold tracking-[-0.04em] text-[#173d3e] sm:text-5xl">A glimpse of Gaseke.</h2></div><span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-[#718586] sm:block">Gallery preview · 04 images</span></div><div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">{[assets.campus, assets.classroom, assets.students, assets.logo].map((src, index) => <motion.div key={src} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ delay: index * 0.07 }} className={`overflow-hidden rounded-2xl bg-[#e6eeea] ${index === 0 ? "md:col-span-2 md:row-span-2" : ""}`}><img src={src} alt={index === 0 ? "GS Gaseke campus" : index === 1 ? "GS Gaseke classroom" : index === 2 ? "GS Gaseke students" : "GS Gaseke logo"} className={`h-full w-full object-cover transition duration-500 hover:scale-105 ${index === 0 ? "aspect-square" : "aspect-square"}`} /></motion.div>)}</div></div>
-        </section>
+        <ScrollStory
+          id="gallery"
+          eyebrow="From our campus"
+          title={<>A glimpse of <span className="text-[#2d7b74]">Gaseke.</span></>}
+          intro="Scroll through the campus, learning spaces, students and school identity without leaving the same visual frame."
+          items={scrollStories.gallery}
+          tone="light"
+        />
 
         <section id="contact" className="scroll-mt-32 bg-[#e9c66b] py-20 text-[#173d3e] sm:py-28">
           <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center lg:gap-20">
