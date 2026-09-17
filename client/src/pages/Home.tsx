@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -27,6 +27,13 @@ const assets = {
   students: "/manus-storage/st2_906e5615.jpg",
 };
 
+const heroMessages = ["Shaping tomorrow.", "Growing potential.", "Inspiring futures."];
+const heroPhotos = [
+  { src: assets.campus, label: "Gaseke campus", caption: "A bright place to belong." },
+  { src: assets.classroom, label: "Learning spaces", caption: "Curiosity deserves room." },
+  { src: assets.students, label: "Digital confidence", caption: "Learning today, leading tomorrow." },
+];
+
 const navItems = [
   { label: "About", href: "#about" },
   { label: "Academics", href: "#academics" },
@@ -53,6 +60,36 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [aboutView, setAboutView] = useState<"overview" | "levels" | "journey" | "fees">("overview");
+  const [typedMessage, setTypedMessage] = useState("");
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [heroPhotoIndex, setHeroPhotoIndex] = useState(0);
+
+  useEffect(() => {
+    const target = heroMessages[messageIndex];
+    const isComplete = typedMessage === target;
+    const delay = isComplete && !isDeleting ? 1900 : isDeleting ? 55 : 95;
+    const timer = window.setTimeout(() => {
+      if (!isDeleting && !isComplete) {
+        setTypedMessage(target.slice(0, typedMessage.length + 1));
+      } else if (!isDeleting && isComplete) {
+        setIsDeleting(true);
+      } else if (isDeleting && typedMessage.length > 0) {
+        setTypedMessage(target.slice(0, typedMessage.length - 1));
+      } else {
+        setIsDeleting(false);
+        setMessageIndex((index) => (index + 1) % heroMessages.length);
+      }
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [isDeleting, messageIndex, typedMessage]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setHeroPhotoIndex((index) => (index + 1) % heroPhotos.length), 4800);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const activeHeroPhoto = heroPhotos[heroPhotoIndex];
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f7f8f4] text-[#183b3d]">
@@ -120,7 +157,7 @@ function Home() {
                 <Sparkles size={13} /> A place to discover your next step
               </div>
               <h1 className="max-w-2xl font-display text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-                Building character.<br /><span className="text-[#f0cf78]">Shaping tomorrow.</span>
+                Building character.<br /><span className="inline-block min-h-[1em] text-[#f0cf78]" aria-live="polite">{typedMessage}<span className="ml-1 inline-block h-[0.82em] w-[3px] translate-y-[0.08em] animate-pulse bg-[#f0cf78]" aria-hidden="true" /></span>
               </h1>
               <p className="mt-7 max-w-lg text-base leading-7 text-white/72 sm:text-lg">
                 Welcome to GS Gaseke — a learning community in Gaseke, Rwanda where curiosity is encouraged, digital skills are nurtured and every learner is seen.
@@ -145,14 +182,19 @@ function Home() {
                 <p className="mt-2 font-display text-xl font-semibold leading-tight">Every learner has room to rise.</p>
               </div>
               <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/35">
-                <img src={assets.campus} alt="GS Gaseke campus courtyard" className="aspect-[4/3] w-full object-cover" />
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.img key={activeHeroPhoto.src} src={activeHeroPhoto.src} alt={activeHeroPhoto.label} initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.7 }} className="aspect-[4/3] w-full object-cover" />
+                </AnimatePresence>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/65 via-transparent to-transparent" />
                 <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">Gaseke campus</p>
-                    <p className="mt-1 font-display text-2xl font-semibold">A bright place to belong.</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeHeroPhoto.label}</p>
+                    <p className="mt-1 font-display text-2xl font-semibold">{activeHeroPhoto.caption}</p>
                   </div>
                   <span className="grid h-10 w-10 place-items-center rounded-full bg-white/15 backdrop-blur"><ArrowRight size={17} /></span>
+                </div>
+                <div className="absolute bottom-5 right-5 flex translate-y-9 gap-1.5 sm:bottom-6 sm:right-6 sm:translate-y-0" aria-label="Hero photo slides">
+                  {heroPhotos.map((photo, index) => <button key={photo.src} type="button" onClick={() => setHeroPhotoIndex(index)} aria-label={`Show ${photo.label}`} className={`h-1.5 rounded-full transition-all ${index === heroPhotoIndex ? "w-7 bg-[#f0cf78]" : "w-1.5 bg-white/55 hover:bg-white"}`} />)}
                 </div>
               </div>
               <div className="absolute -bottom-9 -right-4 grid h-28 w-28 place-items-center rounded-full border-8 border-[#123f40] bg-[#e9c66b] text-center text-[#173d3e] shadow-xl sm:-right-8">
