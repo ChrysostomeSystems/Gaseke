@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
   ArrowLeft,
@@ -34,6 +34,26 @@ const heroPhotos = [
   { src: assets.students, label: "Digital confidence", caption: "Learning today, leading tomorrow." },
 ];
 
+const scrollStories = {
+  academics: [
+    { eyebrow: "Nursery", title: "A gentle first step into learning.", text: "Early foundations, curiosity and a welcoming start to the GS Gaseke journey.", image: assets.campus, kicker: "Education level 01" },
+    { eyebrow: "Primary", title: "Confidence grows one lesson at a time.", text: "Building essential knowledge, learning habits and a strong foundation for the years ahead.", image: assets.classroom, kicker: "Education level 02" },
+    { eyebrow: "O-Level", title: "Strong foundations for future choices.", text: "Developing subject understanding and confidence as learners prepare for their next academic step.", image: assets.students, kicker: "Education level 03" },
+    { eyebrow: "A-Level", title: "Focused pathways for the next chapter.", text: "Mathematics · Economy · Physics · Computer Science", image: assets.classroom, kicker: "Education level 04" },
+  ],
+  facilities: [
+    { eyebrow: "Learning rooms", title: "Thoughtful spaces for questions and collaboration.", text: "Rooms that give lessons, ideas and shared learning room to grow.", image: assets.classroom, kicker: "Space 01" },
+    { eyebrow: "Digital classroom", title: "Hands-on digital confidence.", text: "Computer learning that helps learners build practical confidence step by step.", image: assets.students, kicker: "Space 02" },
+    { eyebrow: "Campus grounds", title: "Open paths for everyday school life.", text: "Shared outdoor spaces that keep the campus active, connected and full of possibility.", image: assets.campus, kicker: "Space 03" },
+  ],
+  activities: [
+    { eyebrow: "Clubs & expression", title: "Every day is an invitation to participate.", text: "A space for creative expression, clubs and the moments that make school memorable.", image: assets.students, kicker: "Beyond the timetable" },
+    { eyebrow: "Sport & active living", title: "Energy belongs in the school day.", text: "Active living and shared moments help school life feel balanced and connected.", image: assets.campus, kicker: "Beyond the timetable" },
+    { eyebrow: "Community moments", title: "Learning happens together.", text: "Use this space to share confirmed events and community experiences as they are provided.", image: assets.classroom, kicker: "Beyond the timetable" },
+    { eyebrow: "Digital discovery", title: "The future is something learners can explore.", text: "Digital discovery grows curiosity and confidence beyond the timetable.", image: assets.students, kicker: "Beyond the timetable" },
+  ],
+} as const;
+
 const navItems = [
   { label: "About", href: "#about" },
   { label: "Academics", href: "#academics" },
@@ -57,6 +77,51 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+type ScrollStoryItem = { eyebrow: string; title: string; text: string; image: string; kicker: string };
+
+function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id: string; eyebrow: string; title: React.ReactNode; intro: string; items: readonly ScrollStoryItem[]; tone?: "light" | "dark" }) {
+  const storyRef = useRef<HTMLElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { scrollYProgress } = useScroll({ target: storyRef, offset: ["start start", "end end"] });
+  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const activeItem = items[activeIndex];
+
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    const nextIndex = Math.min(items.length - 1, Math.floor(value * items.length));
+    if (nextIndex !== activeIndex) setActiveIndex(nextIndex);
+  });
+
+  return (
+    <section id={id} ref={storyRef} className={`relative ${tone === "dark" ? "bg-[#173d3e] text-white" : "bg-[#e6eeea] text-[#173d3e]"}`} style={{ minHeight: `${items.length * 82}vh` }}>
+      <div className="sticky top-0 flex min-h-screen items-center overflow-hidden py-24 sm:py-28">
+        <div className="pointer-events-none absolute inset-0 opacity-70" style={{ background: tone === "dark" ? "radial-gradient(circle at 75% 25%, rgba(45,123,116,.35), transparent 35%)" : "radial-gradient(circle at 85% 20%, rgba(255,255,255,.75), transparent 32%)" }} />
+        <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8">
+          <div className="mb-10 flex items-end justify-between gap-6 sm:mb-14"><div><SectionEyebrow>{eyebrow}</SectionEyebrow><h2 className={`max-w-2xl font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{title}</h2><p className={`mt-5 max-w-xl text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{intro}</p></div><span className={`hidden rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] sm:block ${tone === "dark" ? "border-white/15 text-white/55" : "border-[#b8d2c8] text-[#547072]"}`}>Scroll to explore</span></div>
+          <div className="grid items-center gap-8 lg:grid-cols-[.78fr_1.22fr] lg:gap-16">
+            <div className="order-2 lg:order-1">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div key={`${id}-${activeIndex}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.28 }}>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.kicker}</p>
+                  <h3 className={`mt-4 max-w-xl font-display text-3xl font-semibold leading-tight sm:text-5xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{activeItem.title}</h3>
+                  <p className={`mt-5 max-w-md text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{activeItem.text}</p>
+                </motion.div>
+              </AnimatePresence>
+              <div className="mt-9 flex items-center gap-3"><div className={`h-1.5 w-40 overflow-hidden rounded-full ${tone === "dark" ? "bg-white/15" : "bg-[#cbded5]"}`}><motion.div style={{ width: progressWidth }} className="h-full rounded-full bg-[#e9c66b]" /></div><span className={`text-xs font-bold ${tone === "dark" ? "text-white/50" : "text-[#718586]"}`}>0{activeIndex + 1} / 0{items.length}</span></div>
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">{items.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => setActiveIndex(index)} className={`rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${index === activeIndex ? "border-[#e9c66b] bg-[#e9c66b] text-[#173d3e]" : tone === "dark" ? "border-white/15 bg-white/5 text-white/70 hover:bg-white/10" : "border-[#cbded5] bg-white/55 text-[#547072] hover:bg-white"}`}>{item.eyebrow}</button>)}</div>
+            </div>
+            <div className="order-1 lg:order-2">
+              <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20">
+                <AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={activeItem.eyebrow} initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .98 }} transition={{ duration: .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [aboutView, setAboutView] = useState<"overview" | "levels" | "journey" | "fees">("overview");
@@ -64,6 +129,7 @@ function Home() {
   const [messageIndex, setMessageIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [heroPhotoIndex, setHeroPhotoIndex] = useState(0);
+  const { scrollYProgress: pageScrollProgress } = useScroll();
 
   useEffect(() => {
     const target = heroMessages[messageIndex];
@@ -94,6 +160,7 @@ function Home() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f7f8f4] text-[#183b3d]">
       <header className="fixed inset-x-0 top-0 z-40 bg-[#10393b]/95 shadow-xl shadow-[#092c2c]/15 backdrop-blur-xl">
+        <motion.div style={{ scaleX: pageScrollProgress }} className="absolute inset-x-0 bottom-0 z-50 h-0.5 origin-left bg-[#e9c66b]" aria-hidden="true" />
         <div className="border-b border-white/15 bg-[#113c3d]/90 text-[11px] text-white/75 backdrop-blur">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-2.5 sm:px-8">
             <p className="hidden sm:block">GICUMBI · MUTETE · GASEKE, RWANDA</p>
@@ -230,46 +297,31 @@ function Home() {
           </div>
         </section>
 
-        <section id="academics" className="scroll-mt-32 bg-[#e6eeea] py-24 sm:py-28">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="grid gap-12 lg:grid-cols-[.74fr_1.26fr] lg:items-center">
-              <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }} variants={reveal}>
-                <SectionEyebrow>Our academic journey</SectionEyebrow>
-                <h2 className="max-w-md font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-[#173d3e] sm:text-5xl">Learning that grows with every <span className="text-[#2d7b74]">stage.</span></h2>
-                <p className="mt-6 max-w-md text-base leading-7 text-[#547072]">GS Gaseke supports learners from Nursery through Primary and O-Level, with a focused A-Level pathway for students preparing for their next chapter.</p>
-                <div className="mt-7 grid max-w-md grid-cols-2 gap-3 text-sm">
-                  {["Nursery", "Primary", "O-Level", "A-Level"].map((level) => <div key={level} className="rounded-xl border border-[#cbded5] bg-white/65 px-4 py-3 font-bold text-[#173d3e]">{level}</div>)}
-                </div>
-                <a href="#contact" className="group mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#206a66]">Ask about learning at GS Gaseke <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></a>
-              </motion.div>
-              <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.18 }} transition={{ duration: 0.6 }} className="relative overflow-hidden rounded-[2rem] bg-[#173d3e]">
-                <img src={assets.classroom} alt="Students learning in a GS Gaseke computer classroom" className="aspect-[16/9] w-full object-cover opacity-90" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#103d3d]/90 via-[#103d3d]/15 to-transparent" />
-                <div className="absolute bottom-6 left-6 max-w-[310px] text-white sm:bottom-9 sm:left-9"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#f0cf78]">A-Level at GS Gaseke</p><p className="mt-2 font-display text-2xl font-semibold leading-tight sm:text-3xl">Mathematics · Economy · Physics · Computer Science</p></div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
+        <ScrollStory
+          id="academics"
+          eyebrow="Our academic journey"
+          title={<>Learning that grows with every <span className="text-[#2d7b74]">stage.</span></>}
+          intro="Scroll through the GS Gaseke pathway. The story, image and highlighted level transform together inside this focused experience."
+          items={scrollStories.academics}
+        />
 
-        <section id="facilities" className="scroll-mt-32 bg-[#f7f8f4] py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><SectionEyebrow>Spaces that support growth</SectionEyebrow><h2 className="max-w-lg font-display text-4xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-5xl">A campus made for <span className="text-[#2d7b74]">connection.</span></h2></div><p className="max-w-sm text-sm leading-6 text-[#718586]">Explore the spaces that help school life feel active, focused and full of possibility.</p></div>
-            <div className="mt-12 grid gap-5 md:grid-cols-3">
-              {[{ number: "01", title: "Learning rooms", text: "Thoughtful spaces for lessons, questions and collaboration.", icon: Building2 }, { number: "02", title: "Digital classroom", text: "Hands-on computer learning that grows confidence step by step.", icon: Monitor }, { number: "03", title: "Campus grounds", text: "Open paths and shared spaces for everyday school life.", icon: MapPin }].map(({ number, title, text, icon: Icon }, index) => (
-                <motion.div key={title} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }} variants={{ ...reveal, show: { ...reveal.show, transition: { ...reveal.show.transition, delay: index * 0.08 } } }} className="group rounded-[1.5rem] border border-[#dfe7e1] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-[#173d3e]/8 sm:p-8"><div className="flex items-center justify-between"><span className="font-display text-3xl text-[#bfd2c9]">{number}</span><span className="grid h-10 w-10 place-items-center rounded-full bg-[#e6eeea] text-[#2d7b74] transition group-hover:bg-[#e9c66b] group-hover:text-[#173d3e]"><Icon size={18} /></span></div><h3 className="mt-10 font-display text-2xl font-semibold text-[#173d3e]">{title}</h3><p className="mt-3 text-sm leading-6 text-[#718586]">{text}</p></motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <ScrollStory
+          id="facilities"
+          eyebrow="Spaces that support growth"
+          title={<>A campus made for <span className="text-[#2d7b74]">connection.</span></>}
+          intro="Keep scrolling to move through the spaces that help school life feel active, focused and full of possibility."
+          items={scrollStories.facilities}
+          tone="light"
+        />
 
-        <section id="activities" className="scroll-mt-32 bg-[#173d3e] py-24 text-white sm:py-28">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <div className="grid gap-12 lg:grid-cols-[1fr_.9fr] lg:items-center">
-              <div><SectionEyebrow>Beyond the timetable</SectionEyebrow><h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-5xl">Every day is an invitation to <span className="text-[#f0cf78]">participate.</span></h2><p className="mt-6 max-w-lg text-base leading-7 text-white/65">School is more than lessons. Use this space to share confirmed activities, clubs, events and the moments that make GS Gaseke memorable.</p><div className="mt-8 grid gap-3 sm:grid-cols-2">{["Clubs & creative expression", "Sport & active living", "Community moments", "Digital discovery"].map((item) => <div key={item} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"><span className="grid h-6 w-6 place-items-center rounded-full bg-[#2d7b74] text-[#f0cf78]"><Check size={14} /></span>{item}</div>)}</div></div>
-              <div className="relative"><img src={assets.students} alt="Students developing digital skills" className="aspect-[4/3] w-full rounded-[2rem] object-cover" /><div className="absolute -bottom-5 -left-5 rounded-2xl bg-[#f0cf78] p-5 text-[#173d3e] shadow-xl sm:-left-8"><CalendarDays size={20} /><p className="mt-3 max-w-[150px] font-display text-xl font-semibold leading-tight">A school calendar that keeps everyone connected.</p></div></div>
-            </div>
-          </div>
-        </section>
+        <ScrollStory
+          id="activities"
+          eyebrow="Beyond the timetable"
+          title={<>Every day is an invitation to <span className="text-[#f0cf78]">participate.</span></>}
+          intro="Scroll through the moments, interests and future activities that can make GS Gaseke memorable."
+          items={scrollStories.activities}
+          tone="dark"
+        />
 
         <section id="gallery" className="scroll-mt-32 bg-[#f7f8f4] py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-5 sm:px-8"><div className="flex items-end justify-between gap-6"><div><SectionEyebrow>From our campus</SectionEyebrow><h2 className="font-display text-4xl font-semibold tracking-[-0.04em] text-[#173d3e] sm:text-5xl">A glimpse of Gaseke.</h2></div><span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-[#718586] sm:block">Gallery preview · 04 images</span></div><div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">{[assets.campus, assets.classroom, assets.students, assets.logo].map((src, index) => <motion.div key={src} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ delay: index * 0.07 }} className={`overflow-hidden rounded-2xl bg-[#e6eeea] ${index === 0 ? "md:col-span-2 md:row-span-2" : ""}`}><img src={src} alt={index === 0 ? "GS Gaseke campus" : index === 1 ? "GS Gaseke classroom" : index === 2 ? "GS Gaseke students" : "GS Gaseke logo"} className={`h-full w-full object-cover transition duration-500 hover:scale-105 ${index === 0 ? "aspect-square" : "aspect-square"}`} /></motion.div>)}</div></div>

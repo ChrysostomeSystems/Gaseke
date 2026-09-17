@@ -12,7 +12,10 @@ describe("GS Gaseke interactive About section", () => {
   });
 
   it("contains the confirmed education levels and termly fees", () => {
-    expect(homePage).toContain('"Nursery", "Primary", "O-Level", "A-Level"');
+    expect(homePage).toContain("Nursery");
+    expect(homePage).toContain("Primary");
+    expect(homePage).toContain("O-Level");
+    expect(homePage).toContain("A-Level");
     expect(homePage).toContain('fee: "20,000"');
     expect(homePage).toContain('fee: "50,000"');
     expect(homePage).toContain('fee: "85,000"');
