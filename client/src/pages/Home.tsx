@@ -161,19 +161,32 @@ function Home() {
         </section>
 
         <section id="about" className="relative scroll-mt-32 bg-[#f7f8f4] py-24 sm:py-32">
-          <div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[.86fr_1.14fr] lg:items-end lg:gap-24">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="grid gap-14 lg:grid-cols-[.86fr_1.14fr] lg:items-end lg:gap-24">
             <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={reveal}>
-              <SectionEyebrow>Who we are</SectionEyebrow>
-              <h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-5xl">A school with a clear sense of <span className="text-[#2d7b74]">possibility.</span></h2>
+              <SectionEyebrow>About GS Gaseke</SectionEyebrow>
+              <h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-5xl">A learning journey for every <span className="text-[#2d7b74]">stage.</span></h2>
             </motion.div>
             <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={reveal}>
-              <p className="max-w-2xl text-lg leading-8 text-[#547072]">GS Gaseke is a school community based in Gicumbi – Mutete – Gaseke. This website is being shaped as a welcoming digital front door for learners, families, teachers and the wider school community.</p>
+              <p className="max-w-2xl text-lg leading-8 text-[#547072]">GS Gaseke is located in Gicumbi – Mutete – Gaseke, Rwanda. The school offers education from Nursery through Primary and O-Level, continuing to A-Level with subject pathways in Mathematics, Economy, Physics and Computer Science.</p>
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {[{ icon: BookOpen, title: "Learning", text: "A foundation for confident, curious learners." }, { icon: Users, title: "Community", text: "A place where people learn with and from one another." }, { icon: Monitor, title: "Digital skills", text: "Preparing learners for a connected future." }].map(({ icon: Icon, title, text }) => (
+                {[{ icon: BookOpen, title: "Four levels", text: "Nursery, Primary, O-Level and A-Level." }, { icon: Users, title: "One journey", text: "A continuous path through school stages." }, { icon: Monitor, title: "A-Level focus", text: "Mathematics, Economy, Physics and Computer Science." }].map(({ icon: Icon, title, text }) => (
                   <div key={title} className="border-t border-[#d5dfd9] pt-4"><Icon size={20} className="text-[#2d7b74]" /><h3 className="mt-3 text-sm font-bold text-[#173d3e]">{title}</h3><p className="mt-1 text-xs leading-5 text-[#718586]">{text}</p></div>
                 ))}
               </div>
             </motion.div>
+            </div>
+            <div className="mt-20 border-t border-[#d5dfd9] pt-10 sm:mt-24">
+              <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+                <div><SectionEyebrow>Termly school fees</SectionEyebrow><h3 className="font-display text-3xl font-semibold tracking-[-0.04em] text-[#173d3e] sm:text-4xl">Plan for your learner’s next step.</h3></div>
+                <p className="max-w-sm text-sm leading-6 text-[#718586]">The fee guide below shows the termly amounts provided by GS Gaseke.</p>
+              </div>
+              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {[{ level: "Nursery", fee: "20,000", note: "per term" }, { level: "Primary", fee: "50,000", note: "per term" }, { level: "O-Level", fee: "85,000", note: "per term" }, { level: "A-Level", fee: "85,000", note: "per term" }].map(({ level, fee, note }, index) => (
+                  <div key={level} className={`rounded-2xl border p-5 ${index === 2 || index === 3 ? "border-[#b8d2c8] bg-[#e6eeea]" : "border-[#dfe7e1] bg-white"}`}><div className="flex items-center justify-between"><p className="text-sm font-bold text-[#173d3e]">{level}</p><span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#2d7b74]">FRW</span></div><p className="mt-5 font-display text-3xl font-semibold tracking-[-0.04em] text-[#206a66]">{fee}</p><p className="mt-1 text-xs text-[#718586]">{note}</p></div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -183,9 +196,9 @@ function Home() {
               <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }} variants={reveal}>
                 <SectionEyebrow>Our academic journey</SectionEyebrow>
                 <h2 className="max-w-md font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-[#173d3e] sm:text-5xl">Learning that grows with every <span className="text-[#2d7b74]">stage.</span></h2>
-                <p className="mt-6 max-w-md text-base leading-7 text-[#547072]">GS Gaseke supports learners from Nursery through Primary and Secondary education, with a focused A-Level pathway for students preparing for their next chapter.</p>
+                <p className="mt-6 max-w-md text-base leading-7 text-[#547072]">GS Gaseke supports learners from Nursery through Primary and O-Level, with a focused A-Level pathway for students preparing for their next chapter.</p>
                 <div className="mt-7 grid max-w-md grid-cols-2 gap-3 text-sm">
-                  {["Nursery", "Primary", "Secondary", "A-Level"].map((level) => <div key={level} className="rounded-xl border border-[#cbded5] bg-white/65 px-4 py-3 font-bold text-[#173d3e]">{level}</div>)}
+                  {["Nursery", "Primary", "O-Level", "A-Level"].map((level) => <div key={level} className="rounded-xl border border-[#cbded5] bg-white/65 px-4 py-3 font-bold text-[#173d3e]">{level}</div>)}
                 </div>
                 <a href="#contact" className="group mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#206a66]">Ask about learning at GS Gaseke <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></a>
               </motion.div>
