@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight,
   ArrowLeft,
@@ -17,6 +19,8 @@ import {
   Users,
   X,
 } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const assets = {
   logo: "/manus-storage/logo_95d53d58.jpg",
@@ -101,7 +105,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
       <div className="sticky top-0 flex min-h-screen items-center overflow-hidden py-24 sm:py-28">
         <div className="pointer-events-none absolute inset-0 opacity-70" style={{ background: tone === "dark" ? "radial-gradient(circle at 75% 25%, rgba(45,123,116,.35), transparent 35%)" : "radial-gradient(circle at 85% 20%, rgba(255,255,255,.75), transparent 32%)" }} />
         <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8">
-          <div className="mb-10 flex items-end justify-between gap-6 sm:mb-14"><div><SectionEyebrow>{eyebrow}</SectionEyebrow><h2 className={`max-w-2xl font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{title}</h2><p className={`mt-5 max-w-xl text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{intro}</p></div><span className={`hidden rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] sm:block ${tone === "dark" ? "border-white/15 text-white/55" : "border-[#b8d2c8] text-[#547072]"}`}>Scroll to explore</span></div>
+          <div className="gsap-section-heading mb-10 flex items-end justify-between gap-6 sm:mb-14"><div><SectionEyebrow>{eyebrow}</SectionEyebrow><h2 className={`max-w-2xl font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{title}</h2><p className={`mt-5 max-w-xl text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{intro}</p></div><span className={`hidden rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] sm:block ${tone === "dark" ? "border-white/15 text-white/55" : "border-[#b8d2c8] text-[#547072]"}`}>Scroll to explore</span></div>
           <div className="grid items-center gap-8 lg:grid-cols-[.78fr_1.22fr] lg:gap-16">
             <div className="order-2 lg:order-1">
               <AnimatePresence mode="wait" initial={false}>
@@ -112,7 +116,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
                 </motion.div>
               </AnimatePresence>
               <div className="mt-9 flex items-center gap-3"><div className={`h-1.5 w-40 overflow-hidden rounded-full ${tone === "dark" ? "bg-white/15" : "bg-[#cbded5]"}`}><motion.div style={{ width: progressWidth }} className="h-full rounded-full bg-[#e9c66b]" /></div><span className={`text-xs font-bold ${tone === "dark" ? "text-white/50" : "text-[#718586]"}`}>0{activeIndex + 1} / 0{items.length}</span></div>
-              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">{items.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => setActiveIndex(index)} className={`rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${index === activeIndex ? "border-[#e9c66b] bg-[#e9c66b] text-[#173d3e]" : tone === "dark" ? "border-white/15 bg-white/5 text-white/70 hover:bg-white/10" : "border-[#cbded5] bg-white/55 text-[#547072] hover:bg-white"}`}>{item.eyebrow}</button>)}</div>
+              <div className="gsap-card-group mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">{items.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => setActiveIndex(index)} className={`gsap-card rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${index === activeIndex ? "border-[#e9c66b] bg-[#e9c66b] text-[#173d3e]" : tone === "dark" ? "border-white/15 bg-white/5 text-white/70 hover:bg-white/10" : "border-[#cbded5] bg-white/55 text-[#547072] hover:bg-white"}`}>{item.eyebrow}</button>)}</div>
             </div>
             <div className="order-1 lg:order-2">
               <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20">
@@ -128,6 +132,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
 }
 
 function Home() {
+  const homeRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [aboutView, setAboutView] = useState<"overview" | "levels" | "journey" | "fees">("overview");
   const [typedMessage, setTypedMessage] = useState("");
@@ -135,6 +140,7 @@ function Home() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [heroPhotoIndex, setHeroPhotoIndex] = useState(0);
   const { scrollYProgress: pageScrollProgress } = useScroll();
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const target = heroMessages[messageIndex];
@@ -162,8 +168,29 @@ function Home() {
 
   const activeHeroPhoto = heroPhotos[heroPhotoIndex];
 
+  useLayoutEffect(() => {
+    const root = homeRef.current;
+    if (!root) return;
+    root.classList.add("gsap-enhanced");
+    if (prefersReducedMotion) return () => root.classList.remove("gsap-enhanced");
+
+    const context = gsap.context(() => {
+      gsap.fromTo(".gsap-hero-item", { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.72, stagger: 0.1, ease: "power3.out", clearProps: "transform,opacity,visibility" });
+      gsap.utils.toArray<HTMLElement>(".gsap-section-heading").forEach((heading) => {
+        gsap.fromTo(heading, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out", clearProps: "transform,opacity,visibility", scrollTrigger: { trigger: heading, start: "top 80%", once: true } });
+      });
+      gsap.utils.toArray<HTMLElement>(".gsap-card-group").forEach((group) => {
+        gsap.fromTo(group.querySelectorAll<HTMLElement>(".gsap-card"), { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.58, stagger: 0.09, ease: "power2.out", clearProps: "transform,opacity,visibility", scrollTrigger: { trigger: group, start: "top 82%", once: true } });
+      });
+    }, root);
+    return () => {
+      context.revert();
+      root.classList.remove("gsap-enhanced");
+    };
+  }, [prefersReducedMotion]);
+
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f7f8f4] text-[#183b3d]">
+    <div ref={homeRef} className="min-h-screen overflow-x-hidden bg-[#f7f8f4] text-[#183b3d]">
       <header className="fixed inset-x-0 top-0 z-40 bg-[#10393b]/95 shadow-xl shadow-[#092c2c]/15 backdrop-blur-xl">
         <motion.div style={{ scaleX: pageScrollProgress }} className="absolute inset-x-0 bottom-0 z-50 h-0.5 origin-left bg-[#e9c66b]" aria-hidden="true" />
         <div className="border-b border-white/15 bg-[#113c3d]/90 text-[11px] text-white/75 backdrop-blur">
@@ -224,21 +251,21 @@ function Home() {
           <div className="absolute bottom-0 left-0 h-36 w-full bg-[linear-gradient(to_top,rgba(247,248,244,.9),transparent)]" />
           <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pb-24 sm:px-8 lg:grid-cols-[1.02fr_.98fr] lg:gap-20">
             <motion.div initial="hidden" animate="show" variants={reveal} className="max-w-2xl">
-              <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#e9c66b]/35 bg-[#e9c66b]/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#f5d98a]">
+              <div className="gsap-hero-item mb-7 inline-flex items-center gap-2 rounded-full border border-[#e9c66b]/35 bg-[#e9c66b]/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#f5d98a]">
                 <Sparkles size={13} /> A place to discover your next step
               </div>
-              <h1 className="max-w-2xl font-display text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+              <h1 className="gsap-hero-item max-w-2xl font-display text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
                 Building character.<br /><span className="inline-block min-h-[1em] text-[#f0cf78]" aria-live="polite">{typedMessage}<span className="ml-1 inline-block h-[0.82em] w-[3px] translate-y-[0.08em] animate-pulse bg-[#f0cf78]" aria-hidden="true" /></span>
               </h1>
-              <p className="mt-7 max-w-lg text-base leading-7 text-white/72 sm:text-lg">
+              <p className="gsap-hero-item mt-7 max-w-lg text-base leading-7 text-white/72 sm:text-lg">
                 Welcome to GS Gaseke — a learning community in Gaseke, Rwanda where curiosity is encouraged, digital skills are nurtured and every learner is seen.
               </p>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="gsap-hero-item mt-9 flex flex-col gap-3 sm:flex-row">
                 <a href="#about" className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#f0cf78] px-6 py-3.5 text-sm font-bold text-[#173d3e] transition hover:bg-[#f7dfa0]">
                   Explore our school <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
                 </a>
               </div>
-              <div className="mt-11 flex flex-wrap gap-x-8 gap-y-3 text-xs font-semibold text-white/60">
+              <div className="gsap-hero-item mt-11 flex flex-wrap gap-x-8 gap-y-3 text-xs font-semibold text-white/60">
                 <span className="flex items-center gap-2"><Check size={15} className="text-[#f0cf78]" /> Learning with purpose</span>
                 <span className="flex items-center gap-2"><Check size={15} className="text-[#f0cf78]" /> Digital confidence</span>
               </div>
@@ -278,10 +305,10 @@ function Home() {
               {aboutView === "overview" ? (
                 <motion.div key="about-overview" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.25 }}>
                   <div className="grid gap-10 lg:grid-cols-[.75fr_1.25fr] lg:items-end lg:gap-20">
-                    <div><SectionEyebrow>About GS Gaseke</SectionEyebrow><h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-5xl">Discover the school, one <span className="text-[#2d7b74]">story</span> at a time.</h2><p className="mt-6 max-w-md text-base leading-7 text-[#547072]">Choose a topic below to explore the learning levels, school journey and termly fees at GS Gaseke.</p></div>
-                    <div className="grid gap-4 sm:grid-cols-3">
+                    <div className="gsap-section-heading"><SectionEyebrow>About GS Gaseke</SectionEyebrow><h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.03] tracking-[-0.04em] text-[#173d3e] sm:text-5xl">Discover the school, one <span className="text-[#2d7b74]">story</span> at a time.</h2><p className="mt-6 max-w-md text-base leading-7 text-[#547072]">Choose a topic below to explore the learning levels, school journey and termly fees at GS Gaseke.</p></div>
+                    <div className="gsap-card-group grid gap-4 sm:grid-cols-3">
                       {[{ view: "levels" as const, icon: BookOpen, label: "Education levels", text: "Explore Nursery, Primary, O-Level and A-Level." }, { view: "journey" as const, icon: Users, label: "School journey", text: "Learn about our mission, vision and community." }, { view: "fees" as const, icon: Monitor, label: "School fees", text: "See the termly fee for every education level." }].map(({ view, icon: Icon, label, text }) => (
-                        <button key={view} type="button" onClick={() => setAboutView(view)} className="group rounded-2xl border border-[#dfe7e1] bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-[#b8d2c8] hover:shadow-xl hover:shadow-[#173d3e]/8"><div className="flex items-center justify-between"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#e6eeea] text-[#2d7b74] transition group-hover:bg-[#e9c66b] group-hover:text-[#173d3e]"><Icon size={19} /></span><ArrowRight size={17} className="text-[#9ab3a8] transition group-hover:translate-x-1 group-hover:text-[#206a66]" /></div><h3 className="mt-8 font-display text-xl font-semibold text-[#173d3e]">{label}</h3><p className="mt-2 text-sm leading-6 text-[#718586]">{text}</p><span className="mt-5 block text-[10px] font-bold uppercase tracking-[0.18em] text-[#206a66]">View details</span></button>
+                        <button key={view} type="button" onClick={() => setAboutView(view)} className="gsap-card group rounded-2xl border border-[#dfe7e1] bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-[#b8d2c8] hover:shadow-xl hover:shadow-[#173d3e]/8"><div className="flex items-center justify-between"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[#e6eeea] text-[#2d7b74] transition group-hover:bg-[#e9c66b] group-hover:text-[#173d3e]"><Icon size={19} /></span><ArrowRight size={17} className="text-[#9ab3a8] transition group-hover:translate-x-1 group-hover:text-[#206a66]" /></div><h3 className="mt-8 font-display text-xl font-semibold text-[#173d3e]">{label}</h3><p className="mt-2 text-sm leading-6 text-[#718586]">{text}</p><span className="mt-5 block text-[10px] font-bold uppercase tracking-[0.18em] text-[#206a66]">View details</span></button>
                       ))}
                     </div>
                   </div>
