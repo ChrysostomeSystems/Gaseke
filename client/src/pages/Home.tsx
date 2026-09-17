@@ -9,9 +9,11 @@ import {
   Check,
   ChevronRight,
   MapPin,
+  Mail,
   Menu,
   Monitor,
   PhoneCall,
+  Send,
   Sparkles,
   Users,
   X,
@@ -52,7 +54,7 @@ function Home() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f7f8f4] text-[#183b3d]">
-      <header className="absolute inset-x-0 top-0 z-40">
+      <header className="fixed inset-x-0 top-0 z-40 bg-[#10393b]/95 shadow-xl shadow-[#092c2c]/15 backdrop-blur-xl">
         <div className="border-b border-white/15 bg-[#113c3d]/90 text-[11px] text-white/75 backdrop-blur">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-2.5 sm:px-8">
             <p className="hidden sm:block">GICUMBI · MUTETE · GASEKE, RWANDA</p>
@@ -82,9 +84,6 @@ function Home() {
             </div>
 
             <div className="hidden items-center gap-3 sm:flex">
-              <Link href="/portal" className="rounded-full border border-white/30 px-4 py-2.5 text-xs font-bold text-white transition hover:border-white hover:bg-white/10">
-                Sign in
-              </Link>
               <a href="#contact" className="rounded-full bg-[#e9c66b] px-4 py-2.5 text-xs font-bold text-[#173d3e] transition hover:bg-[#f5d98a]">
                 Get in touch
               </a>
@@ -161,7 +160,7 @@ function Home() {
           </div>
         </section>
 
-        <section id="about" className="relative bg-[#f7f8f4] py-24 sm:py-32">
+        <section id="about" className="relative scroll-mt-32 bg-[#f7f8f4] py-24 sm:py-32">
           <div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[.86fr_1.14fr] lg:items-end lg:gap-24">
             <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={reveal}>
               <SectionEyebrow>Who we are</SectionEyebrow>
@@ -178,7 +177,7 @@ function Home() {
           </div>
         </section>
 
-        <section id="academics" className="bg-[#e6eeea] py-24 sm:py-28">
+        <section id="academics" className="scroll-mt-32 bg-[#e6eeea] py-24 sm:py-28">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <div className="grid gap-12 lg:grid-cols-[.74fr_1.26fr] lg:items-center">
               <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }} variants={reveal}>
@@ -196,7 +195,7 @@ function Home() {
           </div>
         </section>
 
-        <section id="facilities" className="bg-[#f7f8f4] py-24 sm:py-32">
+        <section id="facilities" className="scroll-mt-32 bg-[#f7f8f4] py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><SectionEyebrow>Spaces that support growth</SectionEyebrow><h2 className="max-w-lg font-display text-4xl font-semibold leading-[1.04] tracking-[-0.04em] sm:text-5xl">A campus made for <span className="text-[#2d7b74]">connection.</span></h2></div><p className="max-w-sm text-sm leading-6 text-[#718586]">Explore the spaces that help school life feel active, focused and full of possibility.</p></div>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
@@ -207,7 +206,7 @@ function Home() {
           </div>
         </section>
 
-        <section id="activities" className="bg-[#173d3e] py-24 text-white sm:py-28">
+        <section id="activities" className="scroll-mt-32 bg-[#173d3e] py-24 text-white sm:py-28">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <div className="grid gap-12 lg:grid-cols-[1fr_.9fr] lg:items-center">
               <div><SectionEyebrow>Beyond the timetable</SectionEyebrow><h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-5xl">Every day is an invitation to <span className="text-[#f0cf78]">participate.</span></h2><p className="mt-6 max-w-lg text-base leading-7 text-white/65">School is more than lessons. Use this space to share confirmed activities, clubs, events and the moments that make GS Gaseke memorable.</p><div className="mt-8 grid gap-3 sm:grid-cols-2">{["Clubs & creative expression", "Sport & active living", "Community moments", "Digital discovery"].map((item) => <div key={item} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"><span className="grid h-6 w-6 place-items-center rounded-full bg-[#2d7b74] text-[#f0cf78]"><Check size={14} /></span>{item}</div>)}</div></div>
@@ -216,11 +215,32 @@ function Home() {
           </div>
         </section>
 
-        <section id="gallery" className="bg-[#f7f8f4] py-24 sm:py-32">
+        <section id="gallery" className="scroll-mt-32 bg-[#f7f8f4] py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-5 sm:px-8"><div className="flex items-end justify-between gap-6"><div><SectionEyebrow>From our campus</SectionEyebrow><h2 className="font-display text-4xl font-semibold tracking-[-0.04em] text-[#173d3e] sm:text-5xl">A glimpse of Gaseke.</h2></div><span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-[#718586] sm:block">Gallery preview · 04 images</span></div><div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4">{[assets.campus, assets.classroom, assets.students, assets.logo].map((src, index) => <motion.div key={src} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ delay: index * 0.07 }} className={`overflow-hidden rounded-2xl bg-[#e6eeea] ${index === 0 ? "md:col-span-2 md:row-span-2" : ""}`}><img src={src} alt={index === 0 ? "GS Gaseke campus" : index === 1 ? "GS Gaseke classroom" : index === 2 ? "GS Gaseke students" : "GS Gaseke logo"} className={`h-full w-full object-cover transition duration-500 hover:scale-105 ${index === 0 ? "aspect-square" : "aspect-square"}`} /></motion.div>)}</div></div>
         </section>
 
-        <section id="contact" className="bg-[#e9c66b] py-20 text-[#173d3e] sm:py-24"><div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end"><div><SectionEyebrow>Let’s connect</SectionEyebrow><h2 className="max-w-2xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl">Have a question for GS Gaseke?</h2><p className="mt-5 max-w-xl text-base leading-7 text-[#3e6260]">For official school information, admissions questions or partnership enquiries, contact the school directly. More contact options can be added as details are confirmed.</p></div><div className="flex flex-col gap-3 sm:flex-row lg:flex-col"><a href="tel:0780081074" className="inline-flex items-center justify-center gap-3 rounded-full bg-[#173d3e] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#245a58]"><PhoneCall size={17} /> 0780 081 074</a><span className="inline-flex items-center justify-center gap-3 rounded-full border border-[#173d3e]/20 px-6 py-3.5 text-sm font-semibold"><MapPin size={17} /> Gicumbi · Mutete · Gaseke</span></div></div></section>
+        <section id="contact" className="scroll-mt-32 bg-[#e9c66b] py-20 text-[#173d3e] sm:py-28">
+          <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center lg:gap-20">
+            <div>
+              <SectionEyebrow>Let’s connect</SectionEyebrow>
+              <h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl">Start a conversation with <span className="text-[#206a66]">GS Gaseke.</span></h2>
+              <p className="mt-6 max-w-md text-base leading-7 text-[#3e6260]">Have a question about school life, learning or joining our community? Write to the school team and share what you need help with.</p>
+              <div className="mt-8 space-y-4 border-t border-[#173d3e]/15 pt-6">
+                <a href="tel:0780081074" className="flex items-center gap-3 text-sm font-bold text-[#173d3e] transition hover:text-[#206a66]"><span className="grid h-10 w-10 place-items-center rounded-full bg-[#173d3e] text-[#f0cf78]"><PhoneCall size={17} /></span>0780 081 074</a>
+                <div className="flex items-center gap-3 text-sm font-semibold text-[#3e6260]"><span className="grid h-10 w-10 place-items-center rounded-full border border-[#173d3e]/20"><MapPin size={17} /></span>Gicumbi · Mutete · Gaseke, Rwanda</div>
+              </div>
+            </div>
+            <form className="rounded-[2rem] border border-white/55 bg-[#fffaf0]/80 p-5 shadow-2xl shadow-[#9c761b]/15 backdrop-blur sm:p-8" onSubmit={(event) => event.preventDefault()}>
+              <div className="mb-7 flex items-start justify-between gap-5 border-b border-[#173d3e]/10 pb-5"><div><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#206a66]">Your message</p><h3 className="mt-2 font-display text-2xl font-semibold text-[#173d3e]">How can we help?</h3></div><span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#173d3e] text-[#f0cf78]"><Mail size={20} /></span></div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <label className="block"><span className="mb-2 block text-xs font-bold text-[#547072]">Your name</span><input name="name" type="text" placeholder="Enter your full name" className="w-full rounded-xl border border-[#d4dfd7] bg-white/85 px-4 py-3.5 text-sm text-[#173d3e] outline-none transition placeholder:text-[#9aabaa] focus:border-[#2d7b74] focus:ring-4 focus:ring-[#2d7b74]/10" /></label>
+                <label className="block"><span className="mb-2 block text-xs font-bold text-[#547072]">Email address</span><input name="email" type="email" placeholder="you@example.com" className="w-full rounded-xl border border-[#d4dfd7] bg-white/85 px-4 py-3.5 text-sm text-[#173d3e] outline-none transition placeholder:text-[#9aabaa] focus:border-[#2d7b74] focus:ring-4 focus:ring-[#2d7b74]/10" /></label>
+              </div>
+              <label className="mt-5 block"><span className="mb-2 block text-xs font-bold text-[#547072]">Your message</span><textarea name="message" rows={5} placeholder="Tell us what you would like to know..." className="w-full resize-none rounded-xl border border-[#d4dfd7] bg-white/85 px-4 py-3.5 text-sm leading-6 text-[#173d3e] outline-none transition placeholder:text-[#9aabaa] focus:border-[#2d7b74] focus:ring-4 focus:ring-[#2d7b74]/10" /></label>
+              <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><p className="max-w-xs text-[11px] leading-5 text-[#718586]">Please include enough detail for the school team to respond helpfully.</p><button type="submit" className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#173d3e] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#245a58]">Send your request <Send size={16} className="transition-transform group-hover:translate-x-1" /></button></div>
+            </form>
+          </div>
+        </section>
       </main>
 
       <footer className="bg-[#0e3031] py-10 text-white"><div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 sm:px-8 md:flex-row md:items-center md:justify-between"><div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-white"><img src={assets.logo} alt="GS Gaseke logo" className="h-full w-full object-cover" /></span><div><p className="font-display text-lg font-semibold">GS Gaseke</p><p className="text-[10px] uppercase tracking-[0.18em] text-white/50">Learn · Grow · Lead</p></div></div><div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/55">{navItems.map((item) => <a key={item.href} href={item.href} className="transition hover:text-white">{item.label}</a>)}</div><p className="text-xs text-white/40">© {new Date().getFullYear()} GS Gaseke</p></div></footer>
