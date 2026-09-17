@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "wouter";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
@@ -8,7 +7,6 @@ import {
   Building2,
   CalendarDays,
   Check,
-  ChevronRight,
   MapPin,
   Mail,
   Menu,
@@ -206,7 +204,6 @@ function Home() {
                   {item.label}
                 </a>
               ))}
-              <Link href="/portal" className="mt-2 block rounded-xl bg-[#e9c66b] px-4 py-3 text-center text-sm font-bold text-[#173d3e]">Open school portal</Link>
             </div>
           )}
         </div>
@@ -233,9 +230,6 @@ function Home() {
                 <a href="#about" className="group inline-flex items-center justify-center gap-3 rounded-full bg-[#f0cf78] px-6 py-3.5 text-sm font-bold text-[#173d3e] transition hover:bg-[#f7dfa0]">
                   Explore our school <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
                 </a>
-                <Link href="/portal" className="inline-flex items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-3.5 text-sm font-bold text-white transition hover:border-white hover:bg-white/10">
-                  School portal <ChevronRight size={17} />
-                </Link>
               </div>
               <div className="mt-11 flex flex-wrap gap-x-8 gap-y-3 text-xs font-semibold text-white/60">
                 <span className="flex items-center gap-2"><Check size={15} className="text-[#f0cf78]" /> Learning with purpose</span>
