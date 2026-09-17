@@ -25,4 +25,11 @@ describe("GS Gaseke scrollytelling", () => {
     expect(homePage).toContain("backgroundScale");
     expect(homePage).toContain("items.length * 36");
   });
+
+  it("uses a 3D notebook for Academics and designed panels where photos are not needed", () => {
+    expect(homePage).toContain("function AcademicNotebook");
+    expect(homePage).toContain('visual="notebook"');
+    expect(homePage).toContain('visual="facilities"');
+    expect(homePage).toContain('visual="activities"');
+  });
 });

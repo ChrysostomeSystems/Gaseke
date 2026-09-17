@@ -87,7 +87,50 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
 
 type ScrollStoryItem = { eyebrow: string; title: string; text: string; image: string; kicker: string };
 
-function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id: string; eyebrow: string; title: React.ReactNode; intro: string; items: readonly ScrollStoryItem[]; tone?: "light" | "dark" }) {
+function AcademicNotebook({ item, progress, reducedMotion }: { item: ScrollStoryItem; progress: ReturnType<typeof useScroll>["scrollYProgress"]; reducedMotion: boolean | null }) {
+  const tilt = useTransform(progress, [0, 0.5, 1], [-3, 2, -2]);
+  const lift = useTransform(progress, [0, 0.5, 1], [8, -10, 6]);
+  return (
+    <div className="relative mx-auto aspect-[16/10] w-full max-w-[620px] [perspective:1400px]">
+      <motion.div style={reducedMotion ? undefined : { rotateZ: tilt, y: lift }} className="absolute inset-[7%] [transform-style:preserve-3d]">
+        <div className="absolute inset-0 rounded-[1.5rem] bg-[#c99742] shadow-2xl shadow-[#173d3e]/25 [transform:translateZ(-24px) rotateZ(-2deg)]" />
+        <div className="absolute inset-y-0 left-0 w-1/2 origin-right rounded-l-[1.25rem] border-r border-[#cfd8ca] bg-[#fffdf5] p-5 shadow-xl [transform:rotateY(5deg)] sm:p-8">
+          <div className="flex items-center justify-between text-[#2d7b74]"><BookOpen size={19} /><span className="text-[9px] font-bold uppercase tracking-[0.2em]">GS Gaseke</span></div>
+          <div className="mt-8 space-y-3 opacity-70"><span className="block h-1.5 w-4/5 rounded-full bg-[#dbe7dd]" /><span className="block h-1.5 w-3/5 rounded-full bg-[#dbe7dd]" /><span className="block h-1.5 w-2/3 rounded-full bg-[#dbe7dd]" /><span className="mt-7 block h-16 rounded-xl bg-[#eaf1e9]" /></div>
+          <span className="absolute bottom-5 left-5 font-display text-2xl font-semibold text-[#bdd1c3] sm:bottom-8 sm:left-8">{itemsIndex(item)}</span>
+        </div>
+        <div className="absolute inset-y-0 right-0 w-1/2 origin-left rounded-r-[1.25rem] border-l border-[#cfd8ca] bg-[#fffdf5] p-5 shadow-xl [transform:rotateY(-5deg)] sm:p-8">
+          <AnimatePresence mode="wait" initial={false}><motion.div key={item.eyebrow} initial={reducedMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={reducedMotion ? undefined : { opacity: 0 }} transition={{ duration: reducedMotion ? 0 : 0.25 }}><p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#2d7b74]">{item.eyebrow}</p><p className="mt-3 font-display text-xl font-semibold leading-tight text-[#173d3e] sm:text-2xl">{item.title}</p><p className="mt-4 text-xs leading-5 text-[#718586]">{item.text}</p></motion.div></AnimatePresence>
+          <div className="absolute bottom-5 right-5 flex gap-1 sm:bottom-8 sm:right-8"><span className="h-1.5 w-5 rounded-full bg-[#e9c66b]" /><span className="h-1.5 w-1.5 rounded-full bg-[#c5d8cb]" /><span className="h-1.5 w-1.5 rounded-full bg-[#c5d8cb]" /></div>
+        </div>
+        <div className="absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 rounded-full bg-[#a97b35] shadow-inner [transform:translateZ(8px)]" />
+      </motion.div>
+      <div className="absolute -bottom-2 left-1/2 h-5 w-3/5 -translate-x-1/2 rounded-[50%] bg-[#173d3e]/15 blur-xl" />
+    </div>
+  );
+}
+
+function itemsIndex(item: ScrollStoryItem) {
+  return item.kicker.slice(-2).replace(/\D/g, "") || "01";
+}
+
+function DesignedVisual({ mode, item, progress, reducedMotion }: { mode: "facilities" | "activities"; item: ScrollStoryItem; progress: ReturnType<typeof useScroll>["scrollYProgress"]; reducedMotion: boolean | null }) {
+  const drift = useTransform(progress, [0, 1], [0, mode === "activities" ? 28 : -22]);
+  const isActivities = mode === "activities";
+  return (
+    <motion.div style={reducedMotion ? undefined : { y: drift }} className={`relative mx-auto aspect-[16/10] w-full max-w-[620px] overflow-hidden rounded-[2rem] border p-6 shadow-2xl sm:p-10 ${isActivities ? "border-white/15 bg-[#0f3537]" : "border-[#cbded5] bg-[#dce9df]"}`}>
+      <div className={`absolute -right-16 -top-16 h-56 w-56 rounded-full border ${isActivities ? "border-[#e9c66b]/30" : "border-[#2d7b74]/20"}`} />
+      <div className={`absolute -bottom-24 -left-20 h-64 w-64 rounded-full blur-2xl ${isActivities ? "bg-[#2d7b74]/35" : "bg-white/80"}`} />
+      <div className="relative flex h-full flex-col justify-between">
+        <div className="flex items-center justify-between"><span className={`text-[10px] font-bold uppercase tracking-[0.22em] ${isActivities ? "text-[#f0cf78]" : "text-[#2d7b74]"}`}>{item.kicker}</span><span className={`grid h-11 w-11 place-items-center rounded-2xl ${isActivities ? "bg-[#e9c66b] text-[#173d3e]" : "bg-white text-[#2d7b74]"}`}>{isActivities ? <CalendarDays size={20} /> : <Building2 size={20} />}</span></div>
+        <div><AnimatePresence mode="wait" initial={false}><motion.div key={item.eyebrow} initial={reducedMotion ? false : { opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={reducedMotion ? undefined : { opacity: 0, x: -18 }} transition={{ duration: reducedMotion ? 0 : 0.28 }}><p className={`font-display text-3xl font-semibold leading-tight sm:text-5xl ${isActivities ? "text-white" : "text-[#173d3e]"}`}>{item.title}</p><p className={`mt-4 max-w-sm text-sm leading-6 ${isActivities ? "text-white/60" : "text-[#547072]"}`}>{item.text}</p></motion.div></AnimatePresence></div>
+        <div className="flex items-center gap-2"><span className={`h-2 w-2 rounded-full ${isActivities ? "bg-[#f0cf78]" : "bg-[#2d7b74]"}`} /><span className={`h-2 w-12 rounded-full ${isActivities ? "bg-white/20" : "bg-[#b8d2c8]"}`} /><span className={`h-2 w-4 rounded-full ${isActivities ? "bg-white/20" : "bg-[#b8d2c8]"}`} /></div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual = "image" }: { id: string; eyebrow: string; title: React.ReactNode; intro: string; items: readonly ScrollStoryItem[]; tone?: "light" | "dark"; visual?: "image" | "notebook" | "facilities" | "activities" }) {
   const storyRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
@@ -124,10 +167,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light" }: { id:
               <div className="gsap-card-group mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">{items.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => setActiveIndex(index)} className={`gsap-card rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${index === activeIndex ? "border-[#e9c66b] bg-[#e9c66b] text-[#173d3e]" : tone === "dark" ? "border-white/15 bg-white/5 text-white/70 hover:bg-white/10" : "border-[#cbded5] bg-white/55 text-[#547072] hover:bg-white"}`}>{item.eyebrow}</button>)}</div>
             </div>
             <div className="order-1 lg:order-2">
-              <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20">
-                <AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={activeItem.eyebrow} initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div>
-              </div>
+              {visual === "notebook" ? <AcademicNotebook item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : visual === "facilities" || visual === "activities" ? <DesignedVisual mode={visual} item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20"><AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={activeItem.eyebrow} initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence><div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div></div>}
             </div>
           </div>
         </div>
@@ -334,8 +374,9 @@ function Home() {
           id="academics"
           eyebrow="Our academic journey"
           title={<>Learning that grows with every <span className="text-[#2d7b74]">stage.</span></>}
-          intro="Scroll through the GS Gaseke pathway. The story, image and highlighted level transform together inside this focused experience."
+          intro="Scroll through the GS Gaseke pathway. Each level turns the pages of an interactive learning notebook inside this focused experience."
           items={scrollStories.academics}
+          visual="notebook"
         />
 
         <ScrollStory
@@ -345,6 +386,7 @@ function Home() {
           intro="Keep scrolling to move through the spaces that help school life feel active, focused and full of possibility."
           items={scrollStories.facilities}
           tone="light"
+          visual="facilities"
         />
 
         <ScrollStory
@@ -354,6 +396,7 @@ function Home() {
           intro="Scroll through the moments, interests and future activities that can make GS Gaseke memorable."
           items={scrollStories.activities}
           tone="dark"
+          visual="activities"
         />
 
         <ScrollStory
