@@ -181,15 +181,18 @@ function Home() {
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <div className="grid gap-12 lg:grid-cols-[.74fr_1.26fr] lg:items-center">
               <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }} variants={reveal}>
-                <SectionEyebrow>Learning in action</SectionEyebrow>
-                <h2 className="max-w-md font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-[#173d3e] sm:text-5xl">Where lessons open doors.</h2>
-                <p className="mt-6 max-w-md leading-7 text-[#547072]">Our learning spaces are designed to connect strong foundations with practical confidence. Official curriculum and programme details can be added here as they are confirmed by the school.</p>
+                <SectionEyebrow>Our academic journey</SectionEyebrow>
+                <h2 className="max-w-md font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-[#173d3e] sm:text-5xl">Learning that grows with every <span className="text-[#2d7b74]">stage.</span></h2>
+                <p className="mt-6 max-w-md text-base leading-7 text-[#547072]">GS Gaseke supports learners from Nursery through Primary and Secondary education, with a focused A-Level pathway for students preparing for their next chapter.</p>
+                <div className="mt-7 grid max-w-md grid-cols-2 gap-3 text-sm">
+                  {["Nursery", "Primary", "Secondary", "A-Level"].map((level) => <div key={level} className="rounded-xl border border-[#cbded5] bg-white/65 px-4 py-3 font-bold text-[#173d3e]">{level}</div>)}
+                </div>
                 <a href="#contact" className="group mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#206a66]">Ask about learning at GS Gaseke <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></a>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.18 }} transition={{ duration: 0.6 }} className="relative overflow-hidden rounded-[2rem] bg-[#173d3e]">
                 <img src={assets.classroom} alt="Students learning in a GS Gaseke computer classroom" className="aspect-[16/9] w-full object-cover opacity-90" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#103d3d]/90 via-[#103d3d]/15 to-transparent" />
-                <div className="absolute bottom-6 left-6 max-w-[250px] text-white sm:bottom-9 sm:left-9"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#f0cf78]">Learning spaces</p><p className="mt-2 font-display text-2xl font-semibold leading-tight sm:text-3xl">Curiosity deserves room.</p></div>
+                <div className="absolute bottom-6 left-6 max-w-[310px] text-white sm:bottom-9 sm:left-9"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#f0cf78]">A-Level at GS Gaseke</p><p className="mt-2 font-display text-2xl font-semibold leading-tight sm:text-3xl">Mathematics · Economy · Physics · Computer Science</p></div>
               </motion.div>
             </div>
           </div>
