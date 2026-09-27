@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const homePage = readFileSync(new URL("../client/src/pages/Home.tsx", import.meta.url), "utf8");
+const globalStyles = readFileSync(new URL("../client/src/index.css", import.meta.url), "utf8");
 
 describe("GS Gaseke scrollytelling", () => {
   it("renders reusable pinned stories for academics, facilities, activities and gallery", () => {
@@ -31,5 +32,14 @@ describe("GS Gaseke scrollytelling", () => {
     expect(homePage).toContain('visual="notebook"');
     expect(homePage).toContain('visual="facilities"');
     expect(homePage).toContain('visual="activities"');
+  });
+
+  it("keeps the brand system consistent and calms Facilities and Activities", () => {
+    expect(globalStyles).toContain("Manrope");
+    expect(globalStyles).toContain("Sora");
+    expect(globalStyles).toContain("--gs-forest");
+    expect(globalStyles).toContain("--gs-gold");
+    expect(homePage).toContain('motionLevel="calm"');
+    expect(homePage).toContain("contentDuration");
   });
 });

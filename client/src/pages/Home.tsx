@@ -114,8 +114,8 @@ function itemsIndex(item: ScrollStoryItem) {
   return item.kicker.slice(-2).replace(/\D/g, "") || "01";
 }
 
-function DesignedVisual({ mode, item, progress, reducedMotion }: { mode: "facilities" | "activities"; item: ScrollStoryItem; progress: ReturnType<typeof useScroll>["scrollYProgress"]; reducedMotion: boolean | null }) {
-  const drift = useTransform(progress, [0, 1], [0, mode === "activities" ? 28 : -22]);
+function DesignedVisual({ mode, item, progress, reducedMotion, motionLevel = "full" }: { mode: "facilities" | "activities"; item: ScrollStoryItem; progress: ReturnType<typeof useScroll>["scrollYProgress"]; reducedMotion: boolean | null; motionLevel?: "full" | "calm" }) {
+  const drift = useTransform(progress, [0, 1], [0, motionLevel === "calm" ? 4 : mode === "activities" ? 28 : -22]);
   const isActivities = mode === "activities";
   return (
     <motion.div style={reducedMotion ? undefined : { y: drift }} className={`relative mx-auto aspect-[16/10] w-full max-w-[620px] overflow-hidden rounded-[2rem] border p-6 shadow-2xl sm:p-10 ${isActivities ? "border-white/15 bg-[#0f3537]" : "border-[#cbded5] bg-[#dce9df]"}`}>
@@ -123,22 +123,23 @@ function DesignedVisual({ mode, item, progress, reducedMotion }: { mode: "facili
       <div className={`absolute -bottom-24 -left-20 h-64 w-64 rounded-full blur-2xl ${isActivities ? "bg-[#2d7b74]/35" : "bg-white/80"}`} />
       <div className="relative flex h-full flex-col justify-between">
         <div className="flex items-center justify-between"><span className={`text-[10px] font-bold uppercase tracking-[0.22em] ${isActivities ? "text-[#f0cf78]" : "text-[#2d7b74]"}`}>{item.kicker}</span><span className={`grid h-11 w-11 place-items-center rounded-2xl ${isActivities ? "bg-[#e9c66b] text-[#173d3e]" : "bg-white text-[#2d7b74]"}`}>{isActivities ? <CalendarDays size={20} /> : <Building2 size={20} />}</span></div>
-        <div><AnimatePresence mode="wait" initial={false}><motion.div key={item.eyebrow} initial={reducedMotion ? false : { opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={reducedMotion ? undefined : { opacity: 0, x: -18 }} transition={{ duration: reducedMotion ? 0 : 0.28 }}><p className={`font-display text-3xl font-semibold leading-tight sm:text-5xl ${isActivities ? "text-white" : "text-[#173d3e]"}`}>{item.title}</p><p className={`mt-4 max-w-sm text-sm leading-6 ${isActivities ? "text-white/60" : "text-[#547072]"}`}>{item.text}</p></motion.div></AnimatePresence></div>
+        <div><AnimatePresence mode="wait" initial={false}><motion.div key={item.eyebrow} initial={reducedMotion ? false : { opacity: 0, x: motionLevel === "calm" ? 5 : 18 }} animate={{ opacity: 1, x: 0 }} exit={reducedMotion ? undefined : { opacity: 0, x: motionLevel === "calm" ? -5 : -18 }} transition={{ duration: reducedMotion ? 0 : motionLevel === "calm" ? 0.16 : 0.28 }}><p className={`font-display text-3xl font-semibold leading-tight sm:text-5xl ${isActivities ? "text-white" : "text-[#173d3e]"}`}>{item.title}</p><p className={`mt-4 max-w-sm text-sm leading-6 ${isActivities ? "text-white/60" : "text-[#547072]"}`}>{item.text}</p></motion.div></AnimatePresence></div>
         <div className="flex items-center gap-2"><span className={`h-2 w-2 rounded-full ${isActivities ? "bg-[#f0cf78]" : "bg-[#2d7b74]"}`} /><span className={`h-2 w-12 rounded-full ${isActivities ? "bg-white/20" : "bg-[#b8d2c8]"}`} /><span className={`h-2 w-4 rounded-full ${isActivities ? "bg-white/20" : "bg-[#b8d2c8]"}`} /></div>
       </div>
     </motion.div>
   );
 }
 
-function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual = "image" }: { id: string; eyebrow: string; title: React.ReactNode; intro: string; items: readonly ScrollStoryItem[]; tone?: "light" | "dark"; visual?: "image" | "notebook" | "facilities" | "activities" }) {
+function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual = "image", motionLevel = "full" }: { id: string; eyebrow: string; title: React.ReactNode; intro: string; items: readonly ScrollStoryItem[]; tone?: "light" | "dark"; visual?: "image" | "notebook" | "facilities" | "activities"; motionLevel?: "full" | "calm" }) {
   const storyRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: storyRef, offset: ["start start", "end end"] });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.04, 1.12]);
-  const washX = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", motionLevel === "calm" ? "6%" : "18%"]);
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.04, motionLevel === "calm" ? 1.07 : 1.12]);
+  const washX = useTransform(scrollYProgress, [0, 1], ["0%", motionLevel === "calm" ? "10%" : "28%"]);
+  const contentDuration = motionLevel === "calm" ? 0.16 : 0.28;
   const activeItem = items[activeIndex];
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
@@ -157,7 +158,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual 
           <div className="grid items-center gap-8 lg:grid-cols-[.78fr_1.22fr] lg:gap-16">
             <div className="order-2 lg:order-1">
               <AnimatePresence mode="wait" initial={false}>
-                <motion.div key={`${id}-${activeIndex}`} initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={prefersReducedMotion ? undefined : { opacity: 0, y: -16 }} transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}>
+                <motion.div key={`${id}-${activeIndex}`} initial={prefersReducedMotion ? false : { opacity: 0, y: motionLevel === "calm" ? 8 : 20 }} animate={{ opacity: 1, y: 0 }} exit={prefersReducedMotion ? undefined : { opacity: 0, y: motionLevel === "calm" ? -4 : -16 }} transition={{ duration: prefersReducedMotion ? 0 : contentDuration }}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.kicker}</p>
                   <h3 className={`mt-4 max-w-xl font-display text-3xl font-semibold leading-tight sm:text-5xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{activeItem.title}</h3>
                   <p className={`mt-5 max-w-md text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{activeItem.text}</p>
@@ -167,7 +168,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual 
               <div className="gsap-card-group mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">{items.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => setActiveIndex(index)} className={`gsap-card rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${index === activeIndex ? "border-[#e9c66b] bg-[#e9c66b] text-[#173d3e]" : tone === "dark" ? "border-white/15 bg-white/5 text-white/70 hover:bg-white/10" : "border-[#cbded5] bg-white/55 text-[#547072] hover:bg-white"}`}>{item.eyebrow}</button>)}</div>
             </div>
             <div className="order-1 lg:order-2">
-              {visual === "notebook" ? <AcademicNotebook item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : visual === "facilities" || visual === "activities" ? <DesignedVisual mode={visual} item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20"><AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={activeItem.eyebrow} initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence><div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div></div>}
+              {visual === "notebook" ? <AcademicNotebook item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : visual === "facilities" || visual === "activities" ? <DesignedVisual mode={visual} item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} motionLevel={motionLevel} /> : <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20"><AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={activeItem.eyebrow} initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence><div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div></div>}
             </div>
           </div>
         </div>
@@ -387,6 +388,7 @@ function Home() {
           items={scrollStories.facilities}
           tone="light"
           visual="facilities"
+          motionLevel="calm"
         />
 
         <ScrollStory
@@ -397,6 +399,7 @@ function Home() {
           items={scrollStories.activities}
           tone="dark"
           visual="activities"
+          motionLevel="calm"
         />
 
         <ScrollStory
