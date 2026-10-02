@@ -2,9 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Home } from "lucide-react";
 import { useLocation } from "wouter";
+import { useEffect } from "react";
+import { applyPageSeo, seoDefaults } from "@/lib/seo";
 
 export default function NotFound() {
   const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    applyPageSeo(seoDefaults.notFound);
+  }, []);
 
   const handleGoHome = () => {
     setLocation("/");

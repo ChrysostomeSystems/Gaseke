@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { applyPageSeo, seoDefaults } from "@/lib/seo";
 import {
   ArrowRight,
   ArrowLeft,
@@ -168,7 +169,7 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual 
               <div className="gsap-card-group mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">{items.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => setActiveIndex(index)} className={`gsap-card rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${index === activeIndex ? "border-[#e9c66b] bg-[#e9c66b] text-[#173d3e]" : tone === "dark" ? "border-white/15 bg-white/5 text-white/70 hover:bg-white/10" : "border-[#cbded5] bg-white/55 text-[#547072] hover:bg-white"}`}>{item.eyebrow}</button>)}</div>
             </div>
             <div className="order-1 lg:order-2">
-              {visual === "notebook" ? <AcademicNotebook item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : visual === "facilities" || visual === "activities" ? <DesignedVisual mode={visual} item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} motionLevel={motionLevel} /> : <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20"><AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={activeItem.eyebrow} initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence><div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div></div>}
+              {visual === "notebook" ? <AcademicNotebook item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : visual === "facilities" || visual === "activities" ? <DesignedVisual mode={visual} item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} motionLevel={motionLevel} /> : <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20"><AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={`${activeItem.eyebrow} at GS Gaseke school`} width="1000" height="667" loading="lazy" decoding="async" initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence><div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div></div>}
             </div>
           </div>
         </div>
@@ -187,6 +188,10 @@ function Home() {
   const [heroPhotoIndex, setHeroPhotoIndex] = useState(0);
   const { scrollYProgress: pageScrollProgress } = useScroll();
   const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    applyPageSeo(seoDefaults.home);
+  }, []);
 
   useEffect(() => {
     const target = heroMessages[messageIndex];
@@ -324,7 +329,7 @@ function Home() {
               </div>
               <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/35">
                 <AnimatePresence mode="wait" initial={false}>
-                  <motion.img key={activeHeroPhoto.src} src={activeHeroPhoto.src} alt={activeHeroPhoto.label} initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.7 }} className="aspect-[4/3] w-full object-cover" />
+                  <motion.img key={activeHeroPhoto.src} src={activeHeroPhoto.src} alt={`${activeHeroPhoto.label} at GS Gaseke school`} width="1000" height="667" loading="eager" fetchPriority="high" decoding="async" initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.7 }} className="aspect-[4/3] w-full object-cover" />
                 </AnimatePresence>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/65 via-transparent to-transparent" />
                 <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white">
@@ -435,7 +440,7 @@ function Home() {
         </section>
       </main>
 
-      <footer className="bg-[#0e3031] py-10 text-white"><div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 sm:px-8 md:flex-row md:items-center md:justify-between"><div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-white"><img src={assets.logo} alt="GS Gaseke logo" className="h-full w-full object-cover" /></span><div><p className="font-display text-lg font-semibold">GS Gaseke</p><p className="text-[10px] uppercase tracking-[0.18em] text-white/50">Learn · Grow · Lead</p></div></div><div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/55">{navItems.map((item) => <a key={item.href} href={item.href} className="transition hover:text-white">{item.label}</a>)}</div><p className="text-xs text-white/40">© {new Date().getFullYear()} GS Gaseke</p></div></footer>
+      <footer className="bg-[#0e3031] py-10 text-white"><div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 sm:px-8 md:flex-row md:items-center md:justify-between"><div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-white"><img src={assets.logo} alt="GS Gaseke school logo" width="128" height="128" loading="lazy" decoding="async" className="h-full w-full object-cover" /></span><div><p className="font-display text-lg font-semibold">GS Gaseke</p><p className="text-[10px] uppercase tracking-[0.18em] text-white/50">Learn · Grow · Lead</p></div></div><div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/55">{navItems.map((item) => <a key={item.href} href={item.href} className="transition hover:text-white">{item.label}</a>)}</div><p className="text-xs text-white/40">© {new Date().getFullYear()} GS Gaseke</p></div></footer>
     </div>
   );
 }

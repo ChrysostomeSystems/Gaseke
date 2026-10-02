@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, GraduationCap, LockKeyhole, ShieldCheck, UserRound, UsersRound } from "lucide-react";
 import { Link } from "wouter";
 import { startLogin } from "@/const";
+import { applyPageSeo, seoDefaults } from "@/lib/seo";
 
 const logo = "/manus-storage/logo_95d53d58.jpg";
 
@@ -12,6 +14,10 @@ const roles = [
 ];
 
 export default function Access() {
+  useEffect(() => {
+    applyPageSeo(seoDefaults.portal);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#f7f8f4] text-[#183b3d]">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-5 py-6 sm:px-8">

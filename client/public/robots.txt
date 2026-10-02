@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /portal
+Disallow: /api/
+
+Sitemap: https://gasekeschool-2wxuuzbx.manus.space/sitemap.xml
