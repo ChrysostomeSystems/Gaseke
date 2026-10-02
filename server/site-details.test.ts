@@ -7,7 +7,9 @@ const indexHtml = readFileSync(new URL("../client/index.html", import.meta.url),
 describe("GS Gaseke site details", () => {
   it("includes the generated favicon in document metadata", () => {
     expect(existsSync(new URL("../client/public/favicon.png", import.meta.url))).toBe(true);
+    expect(existsSync(new URL("../client/public/favicon.ico", import.meta.url))).toBe(true);
     expect(indexHtml).toContain('rel="icon"');
+    expect(indexHtml).toContain('href="/favicon.ico"');
     expect(indexHtml).toContain('href="/favicon.png"');
     expect(indexHtml).toContain('rel="apple-touch-icon"');
   });
