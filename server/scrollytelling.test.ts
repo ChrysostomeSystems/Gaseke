@@ -32,6 +32,7 @@ describe("GS Gaseke scrollytelling", () => {
     expect(homePage).toContain('visual="notebook"');
     expect(homePage).toContain('visual="facilities"');
     expect(homePage).toContain('visual="activities"');
+    expect(homePage).toContain('motionLevel="quiet"');
   });
 
   it("keeps the brand system consistent and calms Facilities and Activities", () => {
@@ -40,6 +41,7 @@ describe("GS Gaseke scrollytelling", () => {
     expect(globalStyles).toContain("--gs-forest");
     expect(globalStyles).toContain("--gs-gold");
     expect(homePage).toContain('motionLevel="calm"');
+    expect(homePage).toContain('motionLevel === "quiet"');
     expect(homePage).toContain("contentDuration");
   });
 });
