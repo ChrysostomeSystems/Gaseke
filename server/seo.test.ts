@@ -13,7 +13,7 @@ describe("GS Gaseke SEO foundation", () => {
     expect(indexHtml).toContain('property="og:title"');
     expect(indexHtml).toContain('name="twitter:card"');
     expect(indexHtml).toContain('"@type": "School"');
-    expect(indexHtml).toContain('"telephone": "+250780081074"');
+    expect(indexHtml).toContain('"telephone": "+250788509463"');
   });
 
   it("publishes a sitemap and protects the secure portal from crawling", () => {

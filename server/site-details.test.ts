@@ -15,8 +15,8 @@ describe("GS Gaseke site details", () => {
   });
 
   it("uses a real international phone action for the school", () => {
-    expect(homePage).toContain('href="tel:+250780081074"');
+    expect(homePage).toContain('href="tel:+250788509463"');
     expect(homePage).toContain("Call the school");
-    expect(homePage).toContain("aria-label=\"Call GS Gaseke at 0780 081 074\"");
+    expect(homePage).toContain("aria-label=\"Call GS Gaseke at +250 788 509 463\"");
   });
 });

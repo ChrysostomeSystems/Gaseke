@@ -247,8 +247,8 @@ function Home() {
         <div className="border-b border-white/15 bg-[#113c3d]/90 text-[11px] text-white/75 backdrop-blur">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-2.5 sm:px-8">
             <p className="hidden sm:block">GICUMBI · MUTETE · GASEKE, RWANDA</p>
-            <a className="flex items-center gap-2 transition-colors hover:text-[#e9c66b]" href="tel:+250780081074" aria-label="Call GS Gaseke at 0780 081 074">
-              <PhoneCall size={13} /> 0780 081 074
+            <a className="flex items-center gap-2 transition-colors hover:text-[#e9c66b]" href="tel:+250788509463" aria-label="Call GS Gaseke at +250 788 509 463">
+              <PhoneCall size={13} /> +250 788 509 463
             </a>
           </div>
         </div>
@@ -423,7 +423,7 @@ function Home() {
               <h2 className="max-w-xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl">Start a conversation with <span className="text-[#206a66]">GS Gaseke.</span></h2>
               <p className="mt-6 max-w-md text-base leading-7 text-[#3e6260]">Have a question about school life, learning or joining our community? Write to the school team and share what you need help with.</p>
               <div className="mt-8 space-y-4 border-t border-[#173d3e]/15 pt-6">
-                <a href="tel:+250780081074" aria-label="Call GS Gaseke at 0780 081 074" className="flex items-center gap-3 text-sm font-bold text-[#173d3e] transition hover:text-[#206a66]"><span className="grid h-10 w-10 place-items-center rounded-full bg-[#173d3e] text-[#f0cf78]"><PhoneCall size={17} /></span><span><span className="block text-[10px] uppercase tracking-[0.16em] text-[#547072]">Call the school</span><span className="block">0780 081 074</span></span></a>
+                <a href="tel:+250788509463" aria-label="Call GS Gaseke at +250 788 509 463" className="flex items-center gap-3 text-sm font-bold text-[#173d3e] transition hover:text-[#206a66]"><span className="grid h-10 w-10 place-items-center rounded-full bg-[#173d3e] text-[#f0cf78]"><PhoneCall size={17} /></span><span><span className="block text-[10px] uppercase tracking-[0.16em] text-[#547072]">Call the school</span><span className="block">+250 788 509 463</span></span></a>
                 <div className="flex items-center gap-3 text-sm font-semibold text-[#3e6260]"><span className="grid h-10 w-10 place-items-center rounded-full border border-[#173d3e]/20"><MapPin size={17} /></span>Gicumbi · Mutete · Gaseke, Rwanda</div>
               </div>
             </div>
