@@ -78,12 +78,8 @@ const reveal = {
 };
 
 function SectionEyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-4 flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.24em] text-[#2d7b74]">
-      <span className="h-px w-8 bg-[#2d7b74]" />
-      {children}
-    </div>
-  );
+  void children;
+  return null;
 }
 
 type ScrollStoryItem = { eyebrow: string; title: string; text: string; image: string; kicker: string };
@@ -115,8 +111,8 @@ function itemsIndex(item: ScrollStoryItem) {
   return item.kicker.slice(-2).replace(/\D/g, "") || "01";
 }
 
-function DesignedVisual({ mode, item, progress, reducedMotion, motionLevel = "full" }: { mode: "facilities" | "activities"; item: ScrollStoryItem; progress: ReturnType<typeof useScroll>["scrollYProgress"]; reducedMotion: boolean | null; motionLevel?: "full" | "calm" | "quiet" }) {
-  const drift = useTransform(progress, [0, 1], [0, motionLevel === "quiet" ? 1 : motionLevel === "calm" ? 4 : mode === "activities" ? 28 : -22]);
+function DesignedVisual({ mode, item, progress, reducedMotion, motionLevel = "full" }: { mode: "facilities" | "activities"; item: ScrollStoryItem; progress: ReturnType<typeof useScroll>["scrollYProgress"]; reducedMotion: boolean | null; motionLevel?: "full" | "calm" | "quiet" | "none" }) {
+  const drift = useTransform(progress, [0, 1], [0, motionLevel === "none" ? 0 : motionLevel === "quiet" ? 1 : motionLevel === "calm" ? 4 : mode === "activities" ? 28 : -22]);
   const isActivities = mode === "activities";
   return (
     <motion.div style={reducedMotion ? undefined : { y: drift }} className={`relative mx-auto aspect-[16/10] w-full max-w-[620px] overflow-hidden rounded-[2rem] border p-6 shadow-2xl sm:p-10 ${isActivities ? "border-white/15 bg-[#0f3537]" : "border-[#cbded5] bg-[#dce9df]"}`}>
@@ -124,23 +120,23 @@ function DesignedVisual({ mode, item, progress, reducedMotion, motionLevel = "fu
       <div className={`absolute -bottom-24 -left-20 h-64 w-64 rounded-full blur-2xl ${isActivities ? "bg-[#2d7b74]/35" : "bg-white/80"}`} />
       <div className="relative flex h-full flex-col justify-between">
         <div className="flex items-center justify-between"><span className={`text-[10px] font-bold uppercase tracking-[0.22em] ${isActivities ? "text-[#f0cf78]" : "text-[#2d7b74]"}`}>{item.kicker}</span><span className={`grid h-11 w-11 place-items-center rounded-2xl ${isActivities ? "bg-[#e9c66b] text-[#173d3e]" : "bg-white text-[#2d7b74]"}`}>{isActivities ? <CalendarDays size={20} /> : <Building2 size={20} />}</span></div>
-        <div><AnimatePresence mode="wait" initial={false}><motion.div key={item.eyebrow} initial={reducedMotion ? false : { opacity: 0, x: motionLevel === "quiet" ? 2 : motionLevel === "calm" ? 5 : 18 }} animate={{ opacity: 1, x: 0 }} exit={reducedMotion ? undefined : { opacity: 0, x: motionLevel === "quiet" ? -2 : motionLevel === "calm" ? -5 : -18 }} transition={{ duration: reducedMotion ? 0 : motionLevel === "quiet" ? 0.1 : motionLevel === "calm" ? 0.16 : 0.28 }}><p className={`font-display text-3xl font-semibold leading-tight sm:text-5xl ${isActivities ? "text-white" : "text-[#173d3e]"}`}>{item.title}</p><p className={`mt-4 max-w-sm text-sm leading-6 ${isActivities ? "text-white/60" : "text-[#547072]"}`}>{item.text}</p></motion.div></AnimatePresence></div>
+        <div><AnimatePresence mode="wait" initial={false}><motion.div key={item.eyebrow} initial={reducedMotion ? false : { opacity: 0, x: motionLevel === "none" ? 0 : motionLevel === "quiet" ? 2 : motionLevel === "calm" ? 5 : 18 }} animate={{ opacity: 1, x: 0 }} exit={reducedMotion ? undefined : { opacity: 0, x: motionLevel === "none" ? 0 : motionLevel === "quiet" ? -2 : motionLevel === "calm" ? -5 : -18 }} transition={{ duration: reducedMotion ? 0 : motionLevel === "none" ? 0 : motionLevel === "quiet" ? 0.1 : motionLevel === "calm" ? 0.16 : 0.28 }}><p className={`font-display text-3xl font-semibold leading-tight sm:text-5xl ${isActivities ? "text-white" : "text-[#173d3e]"}`}>{item.title}</p><p className={`mt-4 max-w-sm text-sm leading-6 ${isActivities ? "text-white/60" : "text-[#547072]"}`}>{item.text}</p></motion.div></AnimatePresence></div>
         <div className="flex items-center gap-2"><span className={`h-2 w-2 rounded-full ${isActivities ? "bg-[#f0cf78]" : "bg-[#2d7b74]"}`} /><span className={`h-2 w-12 rounded-full ${isActivities ? "bg-white/20" : "bg-[#b8d2c8]"}`} /><span className={`h-2 w-4 rounded-full ${isActivities ? "bg-white/20" : "bg-[#b8d2c8]"}`} /></div>
       </div>
     </motion.div>
   );
 }
 
-function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual = "image", motionLevel = "full" }: { id: string; eyebrow: string; title: React.ReactNode; intro: string; items: readonly ScrollStoryItem[]; tone?: "light" | "dark"; visual?: "image" | "notebook" | "facilities" | "activities"; motionLevel?: "full" | "calm" | "quiet" }) {
+function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual = "image", motionLevel = "full" }: { id: string; eyebrow: string; title: React.ReactNode; intro: string; items: readonly ScrollStoryItem[]; tone?: "light" | "dark"; visual?: "image" | "notebook" | "facilities" | "activities"; motionLevel?: "full" | "calm" | "quiet" | "none" }) {
   const storyRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: storyRef, offset: ["start start", "end end"] });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", motionLevel === "quiet" ? "2%" : motionLevel === "calm" ? "6%" : "18%"]);
-  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.04, motionLevel === "quiet" ? 1.02 : motionLevel === "calm" ? 1.07 : 1.12]);
-  const washX = useTransform(scrollYProgress, [0, 1], ["0%", motionLevel === "quiet" ? "3%" : motionLevel === "calm" ? "10%" : "28%"]);
-  const contentDuration = motionLevel === "quiet" ? 0.1 : motionLevel === "calm" ? 0.16 : 0.28;
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", motionLevel === "none" ? "0%" : motionLevel === "quiet" ? "2%" : motionLevel === "calm" ? "6%" : "18%"]);
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.04, motionLevel === "none" ? 1 : motionLevel === "quiet" ? 1.02 : motionLevel === "calm" ? 1.07 : 1.12]);
+  const washX = useTransform(scrollYProgress, [0, 1], ["0%", motionLevel === "none" ? "0%" : motionLevel === "quiet" ? "3%" : motionLevel === "calm" ? "10%" : "28%"]);
+  const contentDuration = motionLevel === "none" ? 0 : motionLevel === "quiet" ? 0.1 : motionLevel === "calm" ? 0.16 : 0.28;
   const activeItem = items[activeIndex];
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
@@ -155,21 +151,21 @@ function ScrollStory({ id, eyebrow, title, intro, items, tone = "light", visual 
         <motion.div className="pointer-events-none absolute -inset-y-1/4 -left-1/4 w-[125%] opacity-80" style={{ x: washX, background: tone === "dark" ? "radial-gradient(circle at 75% 25%, rgba(45,123,116,.48), transparent 38%)" : "radial-gradient(circle at 85% 20%, rgba(255,255,255,.88), transparent 36%)" }} aria-hidden="true" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-[#f7f8f4]/20" aria-hidden="true" />
         <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8">
-          <div className="gsap-section-heading mb-10 flex items-end justify-between gap-6 sm:mb-14"><div><SectionEyebrow>{eyebrow}</SectionEyebrow><h2 className={`max-w-2xl font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{title}</h2><p className={`mt-5 max-w-xl text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{intro}</p></div><span className={`hidden rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] sm:block ${tone === "dark" ? "border-white/15 text-white/55" : "border-[#b8d2c8] text-[#547072]"}`}>Scroll to explore</span></div>
+          <div className={`gsap-section-heading ${motionLevel === "none" ? "gsap-static" : ""} mb-10 flex items-end justify-between gap-6 sm:mb-14`}><div><SectionEyebrow>{eyebrow}</SectionEyebrow><h2 className={`max-w-2xl font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{title}</h2><p className={`mt-5 max-w-xl text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{intro}</p></div></div>
           <div className="grid items-center gap-8 lg:grid-cols-[.78fr_1.22fr] lg:gap-16">
             <div className="order-2 lg:order-1">
               <AnimatePresence mode="wait" initial={false}>
-                <motion.div key={`${id}-${activeIndex}`} initial={prefersReducedMotion ? false : { opacity: 0, y: motionLevel === "quiet" ? 3 : motionLevel === "calm" ? 8 : 20 }} animate={{ opacity: 1, y: 0 }} exit={prefersReducedMotion ? undefined : { opacity: 0, y: motionLevel === "quiet" ? -2 : motionLevel === "calm" ? -4 : -16 }} transition={{ duration: prefersReducedMotion ? 0 : contentDuration }}>
+                <motion.div key={`${id}-${activeIndex}`} initial={prefersReducedMotion || motionLevel === "none" ? false : { opacity: 0, y: motionLevel === "quiet" ? 3 : motionLevel === "calm" ? 8 : 20 }} animate={{ opacity: 1, y: 0 }} exit={prefersReducedMotion || motionLevel === "none" ? undefined : { opacity: 0, y: motionLevel === "quiet" ? -2 : motionLevel === "calm" ? -4 : -16 }} transition={{ duration: prefersReducedMotion ? 0 : contentDuration }}>
                   <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.kicker}</p>
                   <h3 className={`mt-4 max-w-xl font-display text-3xl font-semibold leading-tight sm:text-5xl ${tone === "dark" ? "text-white" : "text-[#173d3e]"}`}>{activeItem.title}</h3>
                   <p className={`mt-5 max-w-md text-base leading-7 ${tone === "dark" ? "text-white/65" : "text-[#547072]"}`}>{activeItem.text}</p>
                 </motion.div>
               </AnimatePresence>
               <div className="mt-9 flex items-center gap-3"><div className={`h-1.5 w-40 overflow-hidden rounded-full ${tone === "dark" ? "bg-white/15" : "bg-[#cbded5]"}`}><motion.div style={{ width: progressWidth }} className="h-full rounded-full bg-[#e9c66b]" /></div><span className={`text-xs font-bold ${tone === "dark" ? "text-white/50" : "text-[#718586]"}`}>0{activeIndex + 1} / 0{items.length}</span></div>
-              <div className="gsap-card-group mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">{items.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => setActiveIndex(index)} className={`gsap-card rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${index === activeIndex ? "border-[#e9c66b] bg-[#e9c66b] text-[#173d3e]" : tone === "dark" ? "border-white/15 bg-white/5 text-white/70 hover:bg-white/10" : "border-[#cbded5] bg-white/55 text-[#547072] hover:bg-white"}`}>{item.eyebrow}</button>)}</div>
+              <div className={`gsap-card-group ${motionLevel === "none" ? "gsap-static" : ""} mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2`}>{items.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => setActiveIndex(index)} className={`gsap-card rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${index === activeIndex ? "border-[#e9c66b] bg-[#e9c66b] text-[#173d3e]" : tone === "dark" ? "border-white/15 bg-white/5 text-white/70 hover:bg-white/10" : "border-[#cbded5] bg-white/55 text-[#547072] hover:bg-white"}`}>{item.eyebrow}</button>)}</div>
             </div>
             <div className="order-1 lg:order-2">
-              {visual === "notebook" ? <AcademicNotebook item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : visual === "facilities" || visual === "activities" ? <DesignedVisual mode={visual} item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} motionLevel={motionLevel} /> : <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20"><AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={`${activeItem.eyebrow} at GS Gaseke school`} width="1000" height="667" loading="lazy" decoding="async" initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence><div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div></div>}
+              {visual === "notebook" ? <AcademicNotebook item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion} /> : visual === "facilities" || visual === "activities" ? <DesignedVisual mode={visual} item={activeItem} progress={scrollYProgress} reducedMotion={prefersReducedMotion || motionLevel === "none"} motionLevel={motionLevel} /> : <div className="relative overflow-hidden rounded-[2rem] border-8 border-white/10 bg-white/10 shadow-2xl shadow-[#082d2d]/20"><AnimatePresence mode="wait" initial={false}><motion.img key={`${id}-image-${activeIndex}`} src={activeItem.image} alt={`${activeItem.eyebrow} at GS Gaseke school`} width="1000" height="667" loading="lazy" decoding="async" initial={prefersReducedMotion || motionLevel === "none" ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} exit={prefersReducedMotion || motionLevel === "none" ? undefined : { opacity: 0, scale: .98 }} transition={{ duration: prefersReducedMotion || motionLevel === "none" ? 0 : .55 }} className="aspect-[16/10] w-full object-cover" /></AnimatePresence><div className="absolute inset-0 bg-gradient-to-t from-[#0c3938]/60 via-transparent to-transparent" /><div className="absolute bottom-5 left-5 text-white sm:bottom-7 sm:left-7"><p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f0cf78]">{activeItem.eyebrow}</p><p className="mt-2 font-display text-xl font-semibold sm:text-2xl">{activeItem.title}</p></div></div>}
             </div>
           </div>
         </div>
@@ -227,10 +223,10 @@ function Home() {
 
     const context = gsap.context(() => {
       gsap.fromTo(".gsap-hero-item", { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.72, stagger: 0.1, ease: "power3.out", clearProps: "transform,opacity,visibility" });
-      gsap.utils.toArray<HTMLElement>(".gsap-section-heading").forEach((heading) => {
+      gsap.utils.toArray<HTMLElement>(".gsap-section-heading:not(.gsap-static)").forEach((heading) => {
         gsap.fromTo(heading, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out", clearProps: "transform,opacity,visibility", scrollTrigger: { trigger: heading, start: "top 80%", once: true } });
       });
-      gsap.utils.toArray<HTMLElement>(".gsap-card-group").forEach((group) => {
+      gsap.utils.toArray<HTMLElement>(".gsap-card-group:not(.gsap-static)").forEach((group) => {
         gsap.fromTo(group.querySelectorAll<HTMLElement>(".gsap-card"), { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.58, stagger: 0.09, ease: "power2.out", clearProps: "transform,opacity,visibility", scrollTrigger: { trigger: group, start: "top 82%", once: true } });
       });
     }, root);
@@ -302,9 +298,6 @@ function Home() {
           <div className="absolute bottom-0 left-0 h-36 w-full bg-[linear-gradient(to_top,rgba(247,248,244,.9),transparent)]" />
           <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pb-24 sm:px-8 lg:grid-cols-[1.02fr_.98fr] lg:gap-20">
             <motion.div initial="hidden" animate="show" variants={reveal} className="max-w-2xl">
-              <div className="gsap-hero-item mb-7 inline-flex items-center gap-2 rounded-full border border-[#e9c66b]/35 bg-[#e9c66b]/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#f5d98a]">
-                <Sparkles size={13} /> A place to discover your next step
-              </div>
               <h1 className="gsap-hero-item max-w-2xl font-display text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
                 Building character.<br /><span className="inline-block min-h-[1em] text-[#f0cf78]" aria-live="polite">{typedMessage}<span className="ml-1 inline-block h-[0.82em] w-[3px] translate-y-[0.08em] animate-pulse bg-[#f0cf78]" aria-hidden="true" /></span>
               </h1>
@@ -393,7 +386,7 @@ function Home() {
           items={scrollStories.facilities}
           tone="light"
           visual="facilities"
-          motionLevel="quiet"
+          motionLevel="none"
         />
 
         <ScrollStory
@@ -404,7 +397,7 @@ function Home() {
           items={scrollStories.activities}
           tone="dark"
           visual="activities"
-          motionLevel="calm"
+          motionLevel="none"
         />
 
         <ScrollStory
@@ -414,6 +407,7 @@ function Home() {
           intro="Scroll through the campus, learning spaces, students and school identity without leaving the same visual frame."
           items={scrollStories.gallery}
           tone="light"
+          motionLevel="none"
         />
 
         <section id="contact" className="scroll-mt-32 bg-[#e9c66b] py-20 text-[#173d3e] sm:py-28">

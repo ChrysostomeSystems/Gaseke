@@ -17,7 +17,7 @@ describe("GS Gaseke scrollytelling", () => {
     expect(homePage).toContain("useScroll");
     expect(homePage).toContain("useReducedMotion");
     expect(homePage).toContain("progressWidth");
-    expect(homePage).toContain("Scroll to explore");
+    expect(homePage).not.toContain("Scroll to explore");
   });
 
   it("uses a designed parallax background and compact story spacing", () => {
@@ -32,16 +32,17 @@ describe("GS Gaseke scrollytelling", () => {
     expect(homePage).toContain('visual="notebook"');
     expect(homePage).toContain('visual="facilities"');
     expect(homePage).toContain('visual="activities"');
-    expect(homePage).toContain('motionLevel="quiet"');
+    expect(homePage).toContain('motionLevel="none"');
+    expect(homePage).not.toContain("A place to discover your next step");
   });
 
-  it("keeps the brand system consistent and calms Facilities and Activities", () => {
+  it("keeps the brand system consistent and disables motion in the requested stories", () => {
     expect(globalStyles).toContain("Manrope");
     expect(globalStyles).toContain("Sora");
     expect(globalStyles).toContain("--gs-forest");
     expect(globalStyles).toContain("--gs-gold");
-    expect(homePage).toContain('motionLevel="calm"');
     expect(homePage).toContain('motionLevel === "quiet"');
+    expect(homePage).toContain('motionLevel === "none"');
     expect(homePage).toContain("contentDuration");
   });
 });
