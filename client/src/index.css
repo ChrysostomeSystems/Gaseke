@@ -2,39 +2,39 @@
 
 :root {
   font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  color: #183b3d;
-  background: #f7f8f4;
+  color: #FFFFFF;
+  background: #000000;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   --radius: 0.8rem;
-  --background: 72 27% 97%;
-  --foreground: 184 40% 17%;
-  --card: 0 0% 100%;
-  --card-foreground: 184 40% 17%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 184 40% 17%;
-  --primary: 177 42% 30%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 151 25% 91%;
-  --secondary-foreground: 184 40% 17%;
-  --muted: 151 20% 93%;
-  --muted-foreground: 190 14% 48%;
-  --accent: 44 75% 67%;
-  --accent-foreground: 184 40% 17%;
-  --border: 150 18% 87%;
-  --input: 150 18% 87%;
-  --ring: 177 42% 30%;
-  --gs-forest: #173d3e;
-  --gs-teal: #2d7b74;
-  --gs-gold: #e9c66b;
-  --gs-mist: #e6eeea;
-  --gs-ivory: #f7f8f4;
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 7%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 120 95% 59%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 7%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 7%;
+  --muted-foreground: 0 0% 74%;
+  --accent: 120 95% 59%;
+  --accent-foreground: 0 0% 0%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 120 95% 59%;
+  --gs-forest: #111111;
+  --gs-teal: #34FA34;
+  --gs-gold: #34FA34;
+  --gs-mist: #111111;
+  --gs-ivory: #000000;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; background: #f7f8f4; }
+body { margin: 0; min-width: 320px; background: #000000; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
 button:active, a:active { transform: scale(0.985); }
@@ -42,7 +42,7 @@ button:active, a:active { transform: scale(0.985); }
 .gs-brand-forest { color: var(--gs-forest); }
 .gs-brand-teal { color: var(--gs-teal); }
 .gs-brand-gold { color: var(--gs-gold); }
-::selection { background: #e9c66b; color: #173d3e; }
+::selection { background: #34FA34; color: #000000; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
